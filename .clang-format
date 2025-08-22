@@ -1,0 +1,15 @@
+BasedOnStyle: Google
+ColumnLimit: 90
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands: Align
+AllowShortFunctionsOnASingleLine: Inline
+IndentPPDirectives: BeforeHash
+NamespaceIndentation: All
+SortIncludes: Never
+InsertNewlineAtEOF: true
+MaxEmptyLinesToKeep: 2
+ReferenceAlignment: Left
+PointerAlignment: Left
+DerivePointerAlignment: false

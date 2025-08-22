@@ -1,0 +1,6 @@
+project(cc-tests)
+file(GLOB_RECURSE CC_TESTS_SOURCES *.cpp *.hpp)
+add_executable(cc-tests ${CC_TESTS_SOURCES})
+vy_configure_compiler(cc-tests)
+target_include_directories(cc-tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(cc-tests PRIVATE cc)

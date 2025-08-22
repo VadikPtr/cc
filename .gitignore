@@ -1,0 +1,12 @@
+.vscode
+.vs
+.xmake
+
+/bin
+/build
+/out
+/cmake-*
+.DS_Store
+/.idea/.name
+
+__pycache__
