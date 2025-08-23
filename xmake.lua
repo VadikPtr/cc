@@ -34,7 +34,9 @@ target("cc")
   add_files("cc/**.cpp", "cc/**.c")
   add_includedirs("cc/inc", {public = true})
   add_includedirs("cc/src", {private = true})
-  add_links("Shell32")
+  if is_plat("windows") then
+    add_links("Shell32")
+  end
   setup_compiler_flags()
   add_tests("cc-tests", {
     kind = "binary",
