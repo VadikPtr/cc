@@ -15,7 +15,6 @@ endif()
 include(cmake/vy.cmake)
 
 add_subdirectory(cc)
-add_subdirectory(cg)
 
 if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(cc-tests)
