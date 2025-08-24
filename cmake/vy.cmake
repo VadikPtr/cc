@@ -6,6 +6,7 @@ message("VY_DEPS: ${VY_DEPS}")
 message("VY_ROOT: ${VY_ROOT}")
 message("VY_BIN:  ${VY_BIN}")
 
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(vy_is_macos TRUE CACHE INTERNAL "vy_is_macos")
   set(vy_is_windows FALSE CACHE INTERNAL "vy_is_windows")
@@ -20,32 +21,6 @@ else()
   set(vy_is_linux FALSE CACHE INTERNAL "vy_is_linux")
 endif()
 
-function(vy_dep_subdirectory)
-  set(options)
-  set(oneValueArgs NAME TARGET)
-  set(multiValueArgs FEATURES)
-  cmake_parse_arguments(VY_ADD_LIBRARY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-  if(NOT DEFINED VY_ADD_LIBRARY_NAME)
-    message(FATAL_ERROR "vy_add_library() called with no NAME parameter")
-  endif()
-
-  if(NOT DEFINED VY_ADD_LIBRARY_TARGET)
-    message(DEBUG "vy_add_library() called with no TARGET parameter, assuming name as target")
-    set(VY_ADD_LIBRARY_TARGET ${VY_ADD_LIBRARY_NAME})
-  endif()
-
-  if(NOT TARGET ${VY_ADD_LIBRARY_TARGET})
-    message("vy_add_library: ${VY_DEPS}/${VY_ADD_LIBRARY_NAME} (features: '${VY_ADD_LIBRARY_FEATURES}')")
-    if(NOT DEFINED vy_target_features_${VY_ADD_LIBRARY_NAME})
-      set(
-        vy_target_features_${VY_ADD_LIBRARY_NAME} ${VY_ADD_LIBRARY_FEATURES}
-        CACHE INTERNAL "vy_target_features_${VY_ADD_LIBRARY_NAME}"
-      )
-    endif()
-    add_subdirectory(${VY_DEPS}/${VY_ADD_LIBRARY_NAME} ${VY_ADD_LIBRARY_NAME})
-  endif()
-endfunction()
 
 function(vy_set_target_output_variant target suffix variant)
   if(variant STREQUAL "")
@@ -63,6 +38,7 @@ function(vy_set_target_output_variant target suffix variant)
   endif()
 endfunction()
 
+
 macro(vy_set_target_output target)
   vy_set_target_output_variant(${target} "debug" "")
   vy_set_target_output_variant(${target} "debug" "DEBUG")
@@ -70,6 +46,7 @@ macro(vy_set_target_output target)
   vy_set_target_output_variant(${target} "release" "RELWITHDEBINFO")
   vy_set_target_output_variant(${target} "release" "MINSIZEREL")
 endmacro()
+
 
 function(vy_configure_compiler target)
   set_target_properties(${target} PROPERTIES
@@ -123,4 +100,48 @@ function(vy_configure_compiler target)
     $<$<NOT:$<CONFIG:Debug>>:NDEBUG>
   )
   vy_set_target_output(${target})
+endfunction()
+
+
+function(vy_copy_deps)
+  cmake_parse_arguments(
+    VY_COPY_ARGS # Prefix for variables
+    "" # Options (flags)
+    "TARGET" # Keywords taking one value
+    "MACOS;WINDOWS" # Keywords taking multiple values
+    ${ARGN} # Arguments to parse
+  )
+  message("VY_COPY_ARGS_TARGET: ${VY_COPY_ARGS_TARGET}")
+  message("VY_COPY_ARGS_MACOS: ${VY_COPY_ARGS_MACOS}")
+  message("VY_COPY_ARGS_WINDOWS: ${VY_COPY_ARGS_WINDOWS}")
+
+  if(VY_COPY_ARGS_MACOS AND vy_is_macos)
+    add_custom_command(TARGET ${VY_COPY_ARGS_TARGET} POST_BUILD
+      COMMAND ${VY_CC_ROOT}/cmake/copy-if-none.sh ${VY_BIN}/debug ${VY_COPY_ARGS_MACOS}
+      WORKING_DIRECTORY ${VY_ROOT}
+    )
+    add_custom_command(TARGET ${VY_COPY_ARGS_TARGET} POST_BUILD
+      COMMAND ${VY_CC_ROOT}/cmake/copy-if-none.sh ${VY_BIN}/release ${VY_COPY_ARGS_MACOS}
+      WORKING_DIRECTORY ${VY_ROOT}
+    )
+  endif()
+
+  if(VY_COPY_ARGS_WINDOWS AND vy_is_windows)
+    cmake_path(NATIVE_PATH VY_BIN NORMALIZE VY_NATIVE_BIN)
+
+    set(VY_DEPS_ARGS)
+    foreach(vy_dep ${VY_COPY_ARGS_WINDOWS})
+      cmake_path(NATIVE_PATH vy_dep NORMALIZE vy_native_dep)
+      list(APPEND VY_DEPS_ARGS ${vy_native_dep})
+    endforeach()
+
+    add_custom_command(TARGET ${VY_COPY_ARGS_TARGET} POST_BUILD
+      COMMAND cmd /c ${VY_CC_ROOT}/cmake/copy-if-none.bat ${VY_NATIVE_BIN}\\debug ${VY_DEPS_ARGS}
+      WORKING_DIRECTORY ${VY_ROOT}
+    )
+    add_custom_command(TARGET ${VY_COPY_ARGS_TARGET} POST_BUILD
+      COMMAND cmd /c ${VY_CC_ROOT}/cmake/copy-if-none.bat ${VY_NATIVE_BIN}\\release ${VY_DEPS_ARGS}
+      WORKING_DIRECTORY ${VY_ROOT}
+    )
+  endif()
 endfunction()

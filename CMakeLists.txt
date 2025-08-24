@@ -10,6 +10,7 @@ if(NOT VY_DEPS)
 
   set(VY_ROOT ${VY_DEPS}/.. CACHE INTERNAL "vy_root")
   set(VY_BIN ${VY_ROOT}/bin CACHE INTERNAL "vy_bin")
+  set(VY_CC_ROOT ${CMAKE_CURRENT_LIST_DIR} CACHE INTERNAL "vy_cc_root")
 endif()
 
 include(cmake/vy.cmake)
