@@ -40,6 +40,7 @@ int parallel_for(const Arr<TData>& data, void (*func)(TData&),
   size_t      current_thread = 0;
   AtomicInt   failed_count   = 0;
 
+  // TODO: job stealing is better for this algo. but requires some syncro... :(
   for (auto&& chunk : data.split_into_groups(threads.size())) {
     auto* worker =
         new details::ParallelForThread<TData>{move(chunk), func, on_error, failed_count};
