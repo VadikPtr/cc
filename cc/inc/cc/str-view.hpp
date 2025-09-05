@@ -52,6 +52,16 @@ inline StrView operator""_sv(const char* cstr, size_t size) {
   return {cstr, size};
 }
 
+template <size_t buffer_size>
+[[nodiscard]] bool to_c_string(StrView val, char (&buf)[buffer_size]) {
+  memset(buf, 0, buffer_size);
+  if (val.size() > buffer_size - 1) {
+    return false;
+  }
+  memcpy(buf, val.data(), val.size());
+  return true;
+}
+
 
 class StrHash {
   u64 hash_ = 0;
