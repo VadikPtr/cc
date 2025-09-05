@@ -7,6 +7,8 @@
 #else
   #include <pthread.h>
   #include <unistd.h>
+  #include <sys/types.h>
+  #include <sys/sysctl.h>
 #endif
 
 #ifdef __clang__
@@ -29,7 +31,7 @@ namespace {
         return __ATOMIC_SEQ_CST;  // fallback
     }
   }
-}
+}  // namespace
 #endif
 
 
@@ -69,6 +71,12 @@ void thread_sleep(u32 ms) {
   Sleep(ms);
 }
 
+size_t platform_hardware_thread_count() {
+  SYSTEM_INFO sys_info;
+  GetSystemInfo(&sys_info);
+  return sys_info.dwNumberOfProcessors <= 2 ? 2 : size_t(sys_info.dwNumberOfProcessors);
+}
+
 #else
 
 void* unix_thread_func(void* arg) {
@@ -102,6 +110,13 @@ void thread_join(void*& handle) {
 
 void thread_sleep(u32 ms) {
   usleep(ms * 1000);
+}
+
+size_t platform_hardware_thread_count() {
+  int    num_threads = 2;
+  size_t size        = sizeof(num_threads);
+  ::sysctlbyname("hw.logicalcpu", &num_threads, &size, nullptr, 0);
+  return num_threads <= 2 ? 2 : size_t(num_threads);
 }
 
 #endif
@@ -146,6 +161,10 @@ UPtr<ThreadFunc> Thread::join() {
 
 void Thread::sleep(Time time) {
   thread_sleep(u32(time.ms()));
+}
+
+size_t Thread::hardware_thread_count() {
+  return platform_hardware_thread_count();
 }
 
 

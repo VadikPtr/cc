@@ -32,7 +32,8 @@ class Thread {
   void             start(UPtr<ThreadFunc> func);
   UPtr<ThreadFunc> join();
 
-  static void sleep(Time time);
+  static void   sleep(Time time);
+  static size_t hardware_thread_count();
 };
 
 
