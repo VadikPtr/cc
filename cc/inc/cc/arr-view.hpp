@@ -53,6 +53,11 @@ class ArrView {
     }
     return {data_ + from, count};
   }
+
+  template <typename TOther>
+  ArrView<TOther> cast() {
+    return {reinterpret_cast<TOther*>(data_), sizeof(T) * size_ / sizeof(TOther)};
+  }
 };
 
 template <typename T>

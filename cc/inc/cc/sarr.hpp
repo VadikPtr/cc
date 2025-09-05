@@ -37,6 +37,7 @@ class SArr {
 
   bool       empty() const { return size_ == 0; }
   size_t     size() const { return size_; }
+  size_t     byte_size() const { return size_ * sizeof(T); }
   size_t     capacity() const { return storage_.size(); }
   ArrView<T> view() { return {storage_.data(), size_}; }
   T*         data() { return storage_.data(); }
@@ -53,6 +54,11 @@ class SArr {
   T& push(T value) {
     assert(size_ < storage_.size());
     return storage_[size_++] = move(value);
+  }
+
+  T& push() {
+    assert(size_ < storage_.size());
+    return storage_[size_++];
   }
 
   T pop() {
