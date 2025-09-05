@@ -74,6 +74,17 @@ class Arr : public ArrView<T> {
     return *this;
   }
 
+  Arr& operator+=(const Arr& other) {
+    if (other.size_ > 0) {
+      size_t insert_pos = size_;
+      resize(size_ + other.size_, ResizeFlags::KeepOld);
+      for (auto v : other) {
+        data_[insert_pos++] = v;
+      }
+    }
+    return *this;
+  }
+
  private:
   T* resize_buffer(size_t required_size, ResizeFlags flags);
 };
