@@ -85,6 +85,27 @@ class Arr : public ArrView<T> {
     return *this;
   }
 
+  Arr<Arr> split_into_groups(size_t groups_count) const {
+    Arr<Arr> groups(groups_count);
+
+    if (groups_count == 0) {
+      return groups;
+    }
+
+    size_t group_size    = size_ / groups_count;
+    size_t remainder     = size_ % groups_count;
+    size_t start         = 0;
+    size_t current_group = 0;
+
+    for (size_t i = 0; i < groups_count; ++i) {
+      size_t current_group_size = group_size + (i < remainder ? 1 : 0);
+      groups[current_group++]   = this->sub(start, current_group_size);
+      start += current_group_size;
+    }
+
+    return groups;
+  }
+
  private:
   T* resize_buffer(size_t required_size, ResizeFlags flags);
 };
