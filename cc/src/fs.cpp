@@ -23,6 +23,8 @@ namespace {
 
     OsPath() = default;
 
+    OsPath(const char* str) { strcpy(cstr, str); }
+
     OsPath(const Path& path) {
       auto view = path.view();
       if (view.empty()) {
@@ -327,13 +329,34 @@ size_t Path::file_size() const {
 #endif
 }
 
-bool Path::try_create_dir() const {
-  OsPath p(*this);
+static bool platform_mkdir(const char* path, FsDirMode mode) {
 #ifdef _WIN32
-  return _mkdir(p.cstr) == 0;
+  return _mkdir(path) == 0;
 #else
-  return mkdir(p.cstr, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
+  if (mode == FsDirMode::Recursive) {
+    struct stat st;
+    if (stat(path, &st) == 0) {
+      return true;  // already exists
+    }
+
+    OsPath parent(path);
+    if (char* last_slash = strrchr(parent.cstr, '/')) {
+      *last_slash = '\0';
+      if (strlen(parent.cstr) > 0) {
+        if (!platform_mkdir(parent.cstr, mode)) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
 #endif
+}
+
+bool Path::try_create_dir(FsDirMode mode) const {
+  OsPath p(*this);
+  return platform_mkdir(p.cstr, mode);
 }
 
 bool Path::try_remove_dir(FsDirMode mode) const {
@@ -468,8 +491,8 @@ bool Path::try_visit_dir(IFileVisitor& visitor, FsDirMode mode) const {
 #endif
 }
 
-void Path::create_dir() const {
-  if (!try_create_dir()) {
+void Path::create_dir(FsDirMode mode) const {
+  if (!try_create_dir(mode)) {
     throw Err(fmt("Cannot create directory ", *this));
   }
 }

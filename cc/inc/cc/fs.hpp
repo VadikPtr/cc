@@ -60,11 +60,11 @@ class Path {
   Path    try_absolute() const;  // empty if fails
   FsType  type() const;
   size_t  file_size() const;
-  bool    try_create_dir() const;
+  bool    try_create_dir(FsDirMode mode = FsDirMode::Default) const;
   bool    try_remove_dir(FsDirMode mode = FsDirMode::Default) const;
   bool    try_remove_file() const;
   bool    try_visit_dir(IFileVisitor& visitor, FsDirMode mode = FsDirMode::Default) const;
-  void    create_dir() const;
+  void    create_dir(FsDirMode mode = FsDirMode::Default) const;
   void    remove_dir(FsDirMode mode = FsDirMode::Default) const;
   void    remove_file() const;
   void    visit_dir(IFileVisitor& visitor, FsDirMode mode = FsDirMode::Default) const;
