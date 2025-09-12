@@ -515,6 +515,13 @@ void Path::visit_dir(IFileVisitor& visitor, FsDirMode mode) const {
   }
 }
 
+Arr<u8> Path::read_bytes() const {
+  size_t  sz = file_size();
+  Arr<u8> res(sz);
+  File(*this, "rb").read_bytes(res);
+  return res;
+}
+
 Path Path::join(StrView a, StrView b) {
   if (a.empty()) {
     return b;

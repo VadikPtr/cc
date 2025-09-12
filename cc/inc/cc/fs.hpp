@@ -2,6 +2,7 @@
 #include "cc/common.hpp"
 #include "cc/str.hpp"
 #include "cc/fmt.hpp"
+#include "cc/arr.hpp"
 
 enum class FsType {
   NoExists,
@@ -68,6 +69,7 @@ class Path {
   void    remove_dir(FsDirMode mode = FsDirMode::Default) const;
   void    remove_file() const;
   void    visit_dir(IFileVisitor& visitor, FsDirMode mode = FsDirMode::Default) const;
+  Arr<u8> read_bytes() const;
 
   const StrView& view() const { return data_; }
   u64            hash() const { return data_.hash(); }
