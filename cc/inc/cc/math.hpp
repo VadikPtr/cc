@@ -94,6 +94,7 @@ struct Vec3 {
   f32  len_sqr() const;
   f32  len() const;
   Vec3 normalized() const;
+  Vec3 normalized_or(Vec3 v) const;
   Vec3 rotate_x(f32 angle) const;
   Vec3 rotate_y(f32 angle) const;
   Vec3 rotate_z(f32 angle) const;

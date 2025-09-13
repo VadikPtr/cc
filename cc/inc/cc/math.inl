@@ -99,6 +99,14 @@ mMathInlineFunc f32 Vec3::len() const {
 mMathInlineFunc Vec3 Vec3::normalized() const {
   return *this / len();
 }
+mMathInlineFunc Vec3 Vec3::normalized_or(Vec3 v) const {
+  f32 l = len();
+  if (l > 0.0001) {
+    return *this / l;
+  } else {
+    return v;
+  }
+}
 
 mMathInlineFunc Vec3 operator-(const Vec3& a) {
   return {-a.x, -a.y, -a.z};

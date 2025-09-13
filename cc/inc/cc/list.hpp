@@ -15,16 +15,24 @@ class List {
 
   class Iterator {
     Node* current_ = nullptr;
+    Node* next_    = nullptr;
 
    public:
-    Iterator(Node* current = nullptr) : current_(current) {}
+    Iterator(Node* current = nullptr)
+        : current_(current), next_(current ? current->next : nullptr) {}
 
-    T* operator->() const { return &current_->value; }
-    T& operator*() const { return current_->value; }
+    T*    operator->() const { return &current_->value; }
+    T&    operator*() const { return current_->value; }
+    Node* node() const { return current_; }
 
     Iterator& operator++() {
       assert(current_ != nullptr);
-      current_ = current_->next;
+      current_ = next_;
+      if (current_) {
+        next_ = current_->next;
+      } else {
+        next_ = nullptr;
+      }
       return *this;
     }
 
@@ -99,6 +107,23 @@ class List {
     front_ = nullptr;
     back_  = nullptr;
     size_  = 0;
+  }
+
+  T remove(const Iterator& it) {
+    auto* node = it.node();
+    if (node->prev) {
+      node->prev->next = node->next;
+    } else {
+      front_ = node->next;  // it is front
+    }
+    if (node->next) {
+      node->next->prev = node->prev;
+    } else {
+      back_ = node->prev;  // it is back
+    }
+    T value(move(node->value));
+    delete node;
+    return value;
   }
 
   T& push_front(T value) {
