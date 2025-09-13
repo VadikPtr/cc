@@ -131,16 +131,16 @@ size_t StrView::find(char c) const {
       return i;
     }
   }
-  return UINT64_MAX;
+  return npos;
 }
 
 size_t StrView::find_last(char c) const {
-  for (size_t i = size_ - 1; i != UINT64_MAX; --i) {
+  for (size_t i = size_ - 1; i != npos; --i) {
     if (data_[i] == c) {
       return i;
     }
   }
-  return UINT64_MAX;
+  return npos;
 }
 
 size_t StrView::find(StrView term) const {
@@ -148,7 +148,7 @@ size_t StrView::find(StrView term) const {
     return 0;
   }
   if (term.size_ > size_) {
-    return UINT64_MAX;
+    return npos;
   }
   size_t ssize = size_ - term.size_;
   for (size_t i = 0; i <= ssize; i++) {
@@ -157,7 +157,7 @@ size_t StrView::find(StrView term) const {
       return i;
     }
   }
-  return UINT64_MAX;
+  return npos;
 }
 
 size_t StrView::find_last(StrView term) const {
@@ -165,16 +165,16 @@ size_t StrView::find_last(StrView term) const {
     return 0;
   }
   if (term.size_ > size_) {
-    return UINT64_MAX;
+    return npos;
   }
   size_t ssize = size_ - term.size_;
-  for (size_t i = ssize; i != UINT64_MAX; --i) {
+  for (size_t i = ssize; i != npos; --i) {
     auto from_to = sub(i, term.size_);
     if (from_to == term) {
       return i;
     }
   }
-  return UINT64_MAX;
+  return npos;
 }
 
 StrView StrView::sub(size_t from, size_t count) const {
@@ -197,7 +197,7 @@ ArrView<StrView> StrView::split(char by, ArrView<StrView> out) const {
   size_t pos, index = 0;
   auto   cur = *this;
 
-  while ((pos = cur.find(by)) != UINT64_MAX) {
+  while ((pos = cur.find(by)) != npos) {
     auto append  = cur.sub(0, pos);
     out[index++] = append;
     if (index == out.size()) {
@@ -221,7 +221,7 @@ ArrView<StrView> StrView::split_se(char by, ArrView<StrView> out) const {
   size_t pos, index = 0;
   auto   cur = *this;
 
-  while ((pos = cur.find(by)) != UINT64_MAX) {
+  while ((pos = cur.find(by)) != npos) {
     auto append = cur.sub(0, pos);
     if (!append.empty()) {
       out[index++] = append;
@@ -252,7 +252,7 @@ ArrView<StrView> StrView::split(StrView by, ArrView<StrView> out) const {
   size_t pos, index = 0;
   auto   cur = *this;
 
-  while ((pos = cur.find(by)) != UINT64_MAX) {
+  while ((pos = cur.find(by)) != npos) {
     auto append  = cur.sub(0, pos);
     out[index++] = append;
     if (index == out.size()) {
@@ -281,7 +281,7 @@ ArrView<StrView> StrView::split_se(StrView by, ArrView<StrView> out) const {
   size_t pos, index = 0;
   auto   cur = *this;
 
-  while ((pos = cur.find(by)) != UINT64_MAX) {
+  while ((pos = cur.find(by)) != npos) {
     auto append = cur.sub(0, pos);
     if (!append.empty()) {
       out[index++] = append;

@@ -49,4 +49,4 @@ struct TestCase {
 
 
 TestCase register_test_case(TestCase test_case);
-int      test_case_main();
+int      tests_main(int argc, const char** argv);

@@ -10,6 +10,8 @@ class StrView {
  public:
   using ValueType = char;
 
+  inline static constexpr size_t npos = size_t(-1);
+
   StrView() = default;
   StrView(const char* str);
   StrView(const char* str, size_t size);

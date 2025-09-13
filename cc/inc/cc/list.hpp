@@ -17,6 +17,8 @@ class List {
     Node* current_ = nullptr;
 
    public:
+    Iterator(Node* current = nullptr) : current_(current) {}
+
     T* operator->() const { return &current_->value; }
     T& operator*() const { return current_->value; }
 
@@ -25,12 +27,16 @@ class List {
       current_ = current_->next;
       return *this;
     }
+
+    bool operator==(const Iterator& o) const { return o.current_ == current_; }
   };
 
   class ConstIterator {
     const Node* current_ = nullptr;
 
    public:
+    ConstIterator(Node* current = nullptr) : current_(current) {}
+
     const T* operator->() const { return &current_->value; }
     const T& operator*() const { return current_->value; }
 
@@ -39,6 +45,8 @@ class List {
       current_ = current_->next;
       return *this;
     }
+
+    bool operator==(const ConstIterator& o) const { return o.current_ == current_; }
   };
 
  private:
@@ -73,22 +81,27 @@ class List {
     return *this;
   }
 
-  ~List() {
+  ~List() { clear(); }
+
+  bool          empty() const { return size_ == 0; }
+  size_t        size() const { return size_; }
+  Iterator      begin() { return Iterator{front_}; }
+  Iterator      end() { return Iterator{}; }
+  ConstIterator begin() const { return {front_}; }
+  ConstIterator end() const { return {}; }
+
+  void clear() {
     while (front_) {
       auto* next = front_->next;
       delete front_;
       front_ = next;
     }
+    front_ = nullptr;
+    back_  = nullptr;
+    size_  = 0;
   }
 
-  bool          empty() const { return size_ == 0; }
-  size_t        size() const { return size_; }
-  Iterator      begin() { return {front_}; }
-  Iterator      end() { return {}; }
-  ConstIterator begin() const { return {front_}; }
-  ConstIterator end() const { return {}; }
-
-  void push_front(T value) {
+  T& push_front(T value) {
     auto* new_front = new Node(move(value));
     new_front->next = front_;
     front_          = new_front;
@@ -98,9 +111,10 @@ class List {
       front_->next->prev = front_;
     }
     ++size_;
+    return new_front->value;
   }
 
-  void push_back(T value) {
+  T& push_back(T value) {
     auto* new_back = new Node(move(value));
     new_back->prev = back_;
     back_          = new_back;
@@ -110,6 +124,7 @@ class List {
       back_->prev->next = back_;
     }
     ++size_;
+    return new_back->value;
   }
 
   T pop_front() {

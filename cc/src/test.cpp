@@ -61,7 +61,17 @@ TestCase register_test_case(TestCase test_case) {
   return test_case;
 }
 
-int test_case_main() {
+int tests_main(int argc, const char** argv) {
+  Str filter;
+  ProgOpts::add(ProgOpts::ArgumentStr{
+      .long_name     = "filter",
+      .short_name    = 'f',
+      .help_argument = "Filter tests.",
+      .value         = filter,
+      .flags         = ProgOpts::Optional,
+  });
+  ProgOpts::parse(argc, argv);
+
   const auto& [size, cases] = get_test_case_container();
   fprintf(stdout, "Running tests. Cases: %" PRIu64 "\n", (u64)size);
   fflush(stdout);
@@ -70,6 +80,11 @@ int test_case_main() {
 
   for (size_t i = 0; i < size; ++i) {
     const auto& [name, func] = cases[i];
+
+    if (!filter.empty() && StrView(name).find(filter) == StrView::npos) {
+      continue;
+    }
+
     fprintf(stdout, "[%3" PRIu64 "/%3" PRIu64 "] %s... \n", (u64)i + 1, (u64)size, name);
     fflush(stdout);
 

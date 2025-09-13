@@ -19,10 +19,4 @@ add_subdirectory(cc)
 
 if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(cc-tests)
-  add_subdirectory(cg-example)
-
-  project(cc-demo)
-  add_executable(cc-demo demo.cc)
-  vy_configure_compiler(cc-demo)
-  target_link_libraries(cc-demo PRIVATE cc)
 endif()

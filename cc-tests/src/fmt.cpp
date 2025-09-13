@@ -55,7 +55,7 @@ mTestCase(fmt_basic) {
   mRequireEqStr(fmt("arr[ct]: ", ArrView(arr2)), "arr[ct]: [(1, 2), (3, 4)]");
 
   char buf2[64] = {};
-  sprintf(buf2, "%llu", ULLONG_MAX);
+  snprintf(buf2, sizeof(buf2), "%llu", ULLONG_MAX);
   mRequireEqStr(fmt(ULLONG_MAX), buf2);
 
   mRequireEqStr(fmt(ZeroPrefixU16{4, 0}), "0000");

@@ -1,5 +1,5 @@
 #include "cc/test.hpp"
 
-int main() {
-  return test_case_main();
+int main(int argc, const char** argv) {
+  return tests_main(argc, argv);
 }

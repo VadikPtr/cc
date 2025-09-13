@@ -1,6 +1,7 @@
 #pragma once
 #include "cc/str.hpp"
 #include "cc/error.hpp"
+#include "cc/list.hpp"
 
 template <typename T>
 struct Fmt {
@@ -61,6 +62,22 @@ struct Fmt<ArrView<T>> {
       if (i != v.size() - 1) {
         Fmt<StrView>::format(", "_sv, out);
       }
+    }
+    Fmt<StrView>::format("]"_sv, out);
+  }
+};
+
+template <typename T>
+struct Fmt<List<T>> {
+  static void format(const List<T>& list, StrBuilder& out) {
+    Fmt<StrView>::format("["_sv, out);
+    size_t i = 0;
+    for (const auto& value : list) {
+      Fmt<T>::format(value, out);
+      if (i != list.size() - 1) {
+        Fmt<StrView>::format(", "_sv, out);
+      }
+      ++i;
     }
     Fmt<StrView>::format("]"_sv, out);
   }
@@ -128,7 +145,7 @@ struct StrParser<ArrView<T>> {
         return false;
       }
       size_t pos = str.find(", ");
-      if (pos == UINT64_MAX) {
+      if (pos == StrView::npos) {
         if (i + 1 != out.size()) {
           return false;
         }
@@ -144,6 +161,37 @@ struct StrParser<ArrView<T>> {
     if (str.empty()) return false;
     if (str[0] != ']') return false;
     return true;
+  }
+};
+
+template <typename T>
+struct StrParser<List<T>> {
+  static bool try_parse(StrView str, List<T>& out) {
+    if (str.empty()) return false;
+    if (str[0] != '[') return false;
+    str = str.sub(1);
+
+    for (;;) {
+      if (str.empty()) {
+        return false;
+      }
+      if (str[0] == ']') {
+        return str.size() == 1;
+      }
+      size_t pos  = str.find(", ");
+      size_t skip = 2;
+      if (pos == StrView::npos) {
+        pos  = str.size() - 1;
+        skip = 0;
+      }
+      T val;
+      bool res = StrParser<T>::try_parse(str.sub(0, pos), val);
+      if (!res) {
+        return false;
+      }
+      out.push_back(move(val));
+      str = str.sub(pos + skip);
+    }
   }
 };
 
