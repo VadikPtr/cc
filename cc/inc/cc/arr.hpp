@@ -106,6 +106,12 @@ class Arr : public ArrView<T> {
     return groups;
   }
 
+  // very unoptimized push back. anyway it is nice to have
+  void push(T value) {
+    resize(size_ + 1, ResizeFlags::KeepOld);
+    data_[size_ - 1] = move(value);
+  }
+
  private:
   T* resize_buffer(size_t required_size, ResizeFlags flags);
 };

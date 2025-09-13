@@ -10,6 +10,7 @@
 #include "cc/set.hpp"
 #include "cc/ini.hpp"
 #include "cc/sarr.hpp"
+#include "cc/list.hpp"
 
 #include "cc/algo.hpp"
 #include "cc/fmt.hpp"
