@@ -1,13 +1,10 @@
 #include "cc/error.hpp"
 #include "cc/log.hpp"
-#include <cxxabi.h>
 #include <execinfo.h>
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
-
-// atos -o bin/debug/cupp 0x000000010001B5C8
 
 namespace {
   class AtosPipe {
@@ -31,7 +28,7 @@ namespace {
         return;
       }
 
-      pid = ::fork();
+      pid = ::vfork();
       switch (pid) {
         case pid_t(-1):
           perror("fork()");
@@ -103,24 +100,12 @@ StackTrace::StackTrace() {
     Dl_info info;
     int     r = dladdr(callstack[i], &info);
     if (r) {
-#if 0
-      int    status        = 0;
-      char   buf[256]      = {0};
-      size_t buf_size      = sizeof(buf);
-      char* demangled_name = abi::__cxa_demangle(info.dli_sname, buf, &buf_size, &status);
-      if (status == 0) {
-        fmt(sb, Ptr{callstack[i]}, ' ', i, ": ", StrView(demangled_name), '\n');
-        continue;
-      }
-#else
       Str symbol = extract_symbol(info.dli_fname, callstack[i]);
       if (!symbol.empty()) {
         fmt(sb, Ptr{callstack[i]}, ' ', i, ": ", symbol, '\n');
         continue;
       }
-#endif
     }
-
     fmt(sb, StrView(symbols[i]), '\n');
   }
 
