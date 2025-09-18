@@ -623,6 +623,16 @@ mMathInlineFunc Vec3 lerp(const Vec3& a, const Vec3& b, f32 t) {
   return a * (1.0f - t) + b * t;
 }
 
+mMathInlineFunc mFmtImpl(Int2) {
+  ArrView arr{const_cast<s32*>(reinterpret_cast<const s32*>(&v)), 2};
+  Fmt<ArrView<s32>>::format(arr, out);
+}
+
+mMathInlineFunc mFmtImpl(Vec2) {
+  ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 2};
+  Fmt<ArrView<f32>>::format(arr, out);
+}
+
 mMathInlineFunc mFmtImpl(Vec3) {
   ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 3};
   Fmt<ArrView<f32>>::format(arr, out);

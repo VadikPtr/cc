@@ -18,6 +18,10 @@ namespace {
     return 0;
   }
 
+  bool is_trimmable(char c) {
+    return std::isspace(c) || c == '\n' || c == '\r' || c == '\t';
+  }
+
 #ifdef _DEBUG
   Dict<u64, Str> g_string_hashes;
 #endif
@@ -299,6 +303,34 @@ ArrView<StrView> StrView::split_se(StrView by, ArrView<StrView> out) const {
   return out.sub(0, index);
 }
 
+
+StrView StrView::trim_left() const {
+  u64 begin = 0;
+  for (size_t i = 0; i < size_; ++i) {
+    if (!is_trimmable(data_[begin])) {
+      break;
+    }
+    begin++;
+  }
+  return sub(begin);
+}
+
+StrView StrView::trim_right() const {
+  if (!empty()) {
+    u64 size = size_;
+    for (size_t i = size_ - 1; i != npos; --i) {
+      if (!is_trimmable(data_[i])) {
+        return sub(0, size);
+      }
+      size--;
+    }
+  }
+  return StrView();
+}
+
+StrView StrView::trim() const {
+  return trim_left().trim_right();
+}
 
 StrHash::StrHash(StrView str) : hash_(str.hash()) {
 #ifdef _DEBUG

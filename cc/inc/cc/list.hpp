@@ -1,5 +1,6 @@
 #pragma once
 #include "cc/common.hpp"
+#include "cc/arr.hpp"
 
 // double linked list
 template <typename T>
@@ -180,6 +181,33 @@ class List {
     T value(move(node->value));
     delete node;
     return value;
+  }
+
+  Arr<T> into_arr() {
+    Arr<T> res(size());
+    size_t i = 0;
+    for (auto& v : *this) {
+      res[i++] = move(v);
+    }
+    return res;
+  }
+
+  List& append(List&& other) {
+    if (empty()) {
+      swap(front_, other.front_);
+      swap(back_, other.back_);
+      swap(size_, other.size_);
+    } else {
+      back_->next = other.front_;
+      size_ += other.size_;
+      if (!other.empty()) {
+        other.front_->prev = back_;
+        back_              = other.back_;
+      }
+      other.back_ = other.front_ = nullptr;
+      other.size_                = 0;
+    }
+    return *this;
   }
 
  private:

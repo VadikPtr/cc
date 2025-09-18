@@ -296,6 +296,8 @@ struct BoundingBoxMath {
   void get_edges(Vec3 (&points)[24]) const;
 };
 
+mFmtDeclare(Int2);
+mFmtDeclare(Vec2);
 mFmtDeclare(Vec3);
 mFmtDeclare(Vec4);
 mFmtDeclare(Quat);

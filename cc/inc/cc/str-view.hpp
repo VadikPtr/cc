@@ -48,6 +48,9 @@ class StrView {
   ArrView<StrView> split_se(char by, ArrView<StrView> out) const;  // skip-empty
   ArrView<StrView> split(StrView by, ArrView<StrView> out) const;
   ArrView<StrView> split_se(StrView by, ArrView<StrView> out) const;  // skip-empty
+  StrView          trim_left() const;
+  StrView          trim_right() const;
+  StrView          trim() const;
 };
 
 inline StrView operator""_sv(const char* cstr, size_t size) {
