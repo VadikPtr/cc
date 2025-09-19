@@ -37,9 +37,9 @@
 #endif
 
 #ifdef __clang__
-#define mClangOnly(...) __VA_ARGS__
+  #define mClangOnly(...) __VA_ARGS__
 #else
-#define mClangOnly(...)
+  #define mClangOnly(...)
 #endif
 
 using u8  = uint8_t;

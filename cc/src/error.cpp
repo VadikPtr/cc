@@ -7,6 +7,50 @@
 #include <signal.h>
 
 namespace {
+  class FD {
+    int value_;
+
+   public:
+    FD(int value) : value_(value) {}
+
+    void close() {
+      if (value_ != -1) {
+        ::close(value_);
+        value_ = -1;
+      }
+    }
+
+    operator int() const { return value_; }
+
+    void redirect_to(FD& other) {
+      ::dup2(other, value_);
+      other.close();
+    }
+  };
+
+  class Pipes {
+    FD pipes[2] = {-1, -1};
+
+   public:
+    Pipes() {
+      if (::pipe(reinterpret_cast<int*>(pipes)) < 0) {
+        mLogWarn("pipe() fail");
+        pipes[0] = pipes[1] = -1;
+      }
+    }
+
+    ~Pipes() {
+      if (is_open()) {
+        ::close(pipes[0]);
+        ::close(pipes[1]);
+      }
+    }
+
+    bool is_open() const { return pipes[0] != -1 && pipes[1] != -1; }
+    FD&  readfd() { return pipes[0]; }
+    FD&  writefd() { return pipes[1]; }
+  };
+
   class AtosPipe {
     ::FILE* file;
     ::pid_t pid;
@@ -22,35 +66,30 @@ namespace {
                            const_cast<char*>(addr),
                            0};
 
-      int pdes[2];
-      if (::pipe(pdes) < 0) {
-        mLogWarn("pipe(pdes) fail");
+      Pipes pipes;
+      if (!pipes.is_open()) {
         return;
       }
 
       pid = ::vfork();
-      switch (pid) {
-        case pid_t(-1):
-          perror("fork()");
-          ::close(pdes[0]);
-          ::close(pdes[1]);
-          return;
-
-        case 0:
-          ::close(STDERR_FILENO);
-          ::close(pdes[0]);
-          if (pdes[1] != STDOUT_FILENO) {
-            ::dup2(pdes[1], STDOUT_FILENO);
-          }
-          ::execv(prog_name, argp);
-          ::exit(127);
+      if (pid == pid_t(-1)) {
+        perror("fork()");
+        return;
       }
 
-      file = ::fdopen(pdes[0], "r");
+      if (pid == 0) {  // child
+        pipes.readfd().close();
+        FD(STDOUT_FILENO).redirect_to(pipes.writefd());
+        FD(STDERR_FILENO).redirect_to(pipes.writefd());
+        ::execv(prog_name, argp);
+        ::exit(0);
+      }
+
+      pipes.writefd().close();
+      file = ::fdopen(pipes.readfd(), "r");
       if (!file) {
         mLogWarn("fdopen() fail");
       }
-      ::close(pdes[1]);
     }
 
     operator ::FILE*() const noexcept { return file; }

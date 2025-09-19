@@ -1,6 +1,7 @@
 #pragma once
 #include "cc/common.hpp"
 #include "cc/str-view.hpp"
+#include <initializer_list>
 
 enum class ResizeFlags {
   None    = 0,
@@ -21,6 +22,9 @@ class Arr : public ArrView<T> {
   // --- create
 
   explicit Arr(size_t size) { resize(size); }
+
+  Arr(std::initializer_list<T> list)
+      : Arr(ArrView(const_cast<T*>(list.begin()), list.size())) {}
 
   // --- copy
 
