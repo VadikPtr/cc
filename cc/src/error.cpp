@@ -59,12 +59,11 @@ namespace {
     explicit AtosPipe(const char* exec_path, const char* addr) noexcept
         : file(0), pid(0) {
       char  prog_name[] = "/usr/bin/atos";
-      char* argp[]      = {prog_name,
-                           "-fullPath",
-                           "-o",
-                           const_cast<char*>(exec_path),
-                           const_cast<char*>(addr),
-                           0};
+      char  arg1[]      = "-fullPath";
+      char  arg2[]      = "-o";
+      char* argp[]      = {
+          prog_name, arg1, arg2, const_cast<char*>(exec_path), const_cast<char*>(addr),
+          0};
 
       Pipes pipes;
       if (!pipes.is_open()) {

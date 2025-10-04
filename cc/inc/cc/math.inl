@@ -101,7 +101,7 @@ mMathInlineFunc Vec3 Vec3::normalized() const {
 }
 mMathInlineFunc Vec3 Vec3::normalized_or(Vec3 v) const {
   f32 l = len();
-  if (l > 0.0001) {
+  if (l > 0.0001f) {
     return *this / l;
   } else {
     return v;

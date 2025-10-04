@@ -51,11 +51,11 @@ mTestCase(arr_size_ctor) {
 
 mTestCase(arr_view_ctor) {
   int     values[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  ArrView arr_view{values};
+  ArrView arr_view(values);
   mRequire(arr_view.size() == 10);
   mRequire(arr_view.data() != nullptr);
 
-  Arr arr{arr_view};
+  Arr arr(arr_view);
   mRequire(arr.size() == 10);
   mRequire(arr.data() != nullptr);
   mRequire(arr.data() != arr_view.data());
@@ -75,7 +75,7 @@ mTestCase(arr_view_ctor) {
 
 mTestCase(arr_copy_assignment) {
   int      values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-  Arr      a1{ArrView{values}};
+  Arr      a1(ArrView{values});
   Arr<int> a2;
   a2 = a1;
 
