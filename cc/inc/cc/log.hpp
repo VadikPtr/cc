@@ -38,9 +38,8 @@ void log_write(StrBuilder& builder);
     mLogWrite("WARN", __VA_ARGS__);     \
   }
 
-#define mLogCrit(...)                                  \
-  {                                                    \
-    mLogWrite("CRIT", __VA_ARGS__);                    \
-    mLogWrite("CRIT", "Stack: ", StackTrace().view()); \
-    abort();                                           \
+#define mLogCrit(...)                                                 \
+  {                                                                   \
+    mLogWrite("CRIT", __VA_ARGS__, "\nStack: ", StackTrace().view()); \
+    abort();                                                          \
   }
