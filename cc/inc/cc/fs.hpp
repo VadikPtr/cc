@@ -59,6 +59,7 @@ class Path {
   Path    relative_to(const Path& base) const;
   Path    absolute() const;
   Path    try_absolute() const;  // empty if fails
+  Path    find_dir_up(StrView name) const;
   FsType  type() const;
   size_t  file_size() const;
   bool    try_create_dir(FsDirMode mode = FsDirMode::Default) const;

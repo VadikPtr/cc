@@ -62,15 +62,15 @@ namespace {
       char  arg1[]      = "-fullPath";
       char  arg2[]      = "-o";
       char* argp[]      = {
-          prog_name, arg1, arg2, const_cast<char*>(exec_path), const_cast<char*>(addr),
-          0};
+          prog_name, arg1, arg2, const_cast<char*>(exec_path), const_cast<char*>(addr), 0,
+      };
 
       Pipes pipes;
       if (!pipes.is_open()) {
         return;
       }
 
-      pid = ::vfork();
+      pid = ::fork();
       if (pid == pid_t(-1)) {
         perror("fork()");
         return;
@@ -107,8 +107,11 @@ namespace {
     StrBuilder addr;
     fmt(addr, Ptr{ptr}, '\0');
 
+    mLogInfo("exec: ", StrView(exec_path), addr.view());
+
     AtosPipe pipe(exec_path, addr.view().data());
     if (!pipe) {
+      puts("AtosPipe FAILED!");
       return Str();
     }
 

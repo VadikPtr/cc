@@ -33,8 +33,9 @@ struct ZeroPrefixU16 {
 mFmtDeclare(unsigned long long);
 mFmtDeclare(unsigned long);
 mFmtDeclare(bool);
-mFmtDeclare(u16);
 mFmtDeclare(ZeroPrefixU16);
+mFmtDeclare(u8);
+mFmtDeclare(u16);
 mFmtDeclare(s16);
 mFmtDeclare(u32);
 mFmtDeclare(s32);

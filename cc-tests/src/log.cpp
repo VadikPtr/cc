@@ -8,5 +8,6 @@ mTestCase(log_open_test) {
   mLogDebug("Hello from debug!");
   mLogInfo("Hello from info!");
   mLogWarn("Hello from warn!");
+  mLogInfo("Stack: ", StackTrace().view());
   // do not call crit. it will crash app
 }

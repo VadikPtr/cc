@@ -273,6 +273,18 @@ Path Path::try_absolute() const {
   return out;
 }
 
+Path Path::find_dir_up(StrView name) const {
+  for (Path cur = *this;;) {
+    if (auto d = cur / name; d.type() == FsType::Directory) {
+      return d;
+    }
+    if (!cur.has_parent()) {
+      throw Err(fmt("cannot find dir: ", StrView(name)));
+    }
+    cur = cur.parent();
+  }
+}
+
 FsType Path::type() const {
   OsPath p(*this);
 #ifdef _WIN32

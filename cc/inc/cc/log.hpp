@@ -2,6 +2,7 @@
 #include "cc/fs.hpp"
 #include "cc/fmt.hpp"
 #include "cc/time.hpp"
+#include "cc/error.hpp"
 
 enum class LogLevel {
   Debug,
@@ -37,8 +38,9 @@ void log_write(StrBuilder& builder);
     mLogWrite("WARN", __VA_ARGS__);     \
   }
 
-#define mLogCrit(...)               \
-  {                                 \
-    mLogWrite("CRIT", __VA_ARGS__); \
-    abort();                        \
+#define mLogCrit(...)                                  \
+  {                                                    \
+    mLogWrite("CRIT", __VA_ARGS__);                    \
+    mLogWrite("CRIT", "Stack: ", StackTrace().view()); \
+    abort();                                           \
   }

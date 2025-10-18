@@ -3,6 +3,7 @@
 #include "cc/hash.hpp"
 #include "cc/log.hpp"
 #include "cc/str.hpp"
+#include "cc/error.hpp"
 #include <cctype>
 
 namespace {
@@ -330,6 +331,23 @@ StrView StrView::trim_right() const {
 
 StrView StrView::trim() const {
   return trim_left().trim_right();
+}
+
+bool StrView::try_to_c_str(char* buf, size_t buffer_size) const {
+  if (buffer_size == 0 || buf == nullptr || size_ > buffer_size - 1) {
+    return false;
+  }
+  if (size_ > 0) {
+    memcpy(buf, data_, size_);
+  }
+  buf[size_] = 0;
+  return true;
+}
+
+void StrView::to_c_str(char* buf, size_t buffer_size) const {
+  if (!try_to_c_str(buf, buffer_size)) {
+    throw Err("Not enough memory to convert string to c string"_s);
+  }
 }
 
 StrHash::StrHash(StrView str) : hash_(str.hash()) {

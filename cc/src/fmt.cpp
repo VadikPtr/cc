@@ -189,14 +189,6 @@ mFmtImpl(bool) {
     out.append("false");
   }
 }
-mFmtImpl(s16) {
-  char buf[32];
-  out.append(to_string(v, buf));
-}
-mFmtImpl(u16) {
-  char buf[32];
-  out.append(to_string(v, buf));
-}
 mFmtImpl(ZeroPrefixU16) {
   char    buf[32];
   StrView r    = to_string(v.value, buf);
@@ -208,6 +200,18 @@ mFmtImpl(ZeroPrefixU16) {
     size++;
   }
   out.append(StrView(ptr, size));
+}
+mFmtImpl(u8) {
+  char buf[32];
+  out.append(to_string(v, buf));
+}
+mFmtImpl(s16) {
+  char buf[32];
+  out.append(to_string(v, buf));
+}
+mFmtImpl(u16) {
+  char buf[32];
+  out.append(to_string(v, buf));
 }
 mFmtImpl(s32) {
   char buf[32];
@@ -237,6 +241,9 @@ mFmtImpl(Ptr) {
     *--ptr   = digit < 10 ? '0' + digit : 'A' + (digit - 10);
   }
   out.append(StrView(buf, sizeof(buf)));
+}
+mFmtImpl(char) {
+  out.append(v);
 }
 
 mFmtImpl(HumanMemorySize) {
@@ -280,9 +287,6 @@ mFmtImpl(StrHash) {
     *--ptr   = digit < 10 ? '0' + digit : 'A' + (digit - 10);
   }
   out.append(StrView(buf, sizeof(buf)));
-}
-mFmtImpl(char) {
-  out.append(v);
 }
 
 mStrParserImpl(unsigned long long) {

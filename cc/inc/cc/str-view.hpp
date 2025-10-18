@@ -51,6 +51,18 @@ class StrView {
   StrView          trim_left() const;
   StrView          trim_right() const;
   StrView          trim() const;
+  bool             try_to_c_str(char* buf, size_t buffer_size) const;
+  void             to_c_str(char* buf, size_t buffer_size) const;
+
+  template <size_t buffer_size>
+  bool try_to_c_str(char (&buf)[buffer_size]) const {
+    return try_to_c_str(buf, buffer_size);
+  }
+
+  template <size_t buffer_size>
+  void to_c_str(char (&buf)[buffer_size]) const {
+    to_c_str(buf, buffer_size);
+  }
 };
 
 inline StrView operator""_sv(const char* cstr, size_t size) {

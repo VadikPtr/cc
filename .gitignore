@@ -1,12 +1,12 @@
+/.idea/.name
 .vscode
 .vs
 .xmake
-
+.cache
+.DS_Store
 /bin
 /build
 /out
 /cmake-*
-.DS_Store
-/.idea/.name
-
 __pycache__
+compile_commands.json
