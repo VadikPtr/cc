@@ -11,5 +11,5 @@ project "cc"
   kind "StaticLib"
   language "C++"
   buildoptions { warnings_flags, "-Wno-error=deprecated-declarations", }
-  files { "**.hpp", "**.cpp", "*.h", "*.c" }
+  files { "**.hpp", "**.cpp", "**.h", "**.c" }
   includedirs { "inc", "src" }
