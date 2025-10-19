@@ -58,6 +58,12 @@ class ArrView {
   ArrView<TOther> cast() {
     return {reinterpret_cast<TOther*>(data_), sizeof(T) * size_ / sizeof(TOther)};
   }
+
+  void fill(T element) {
+    for (size_t i = 0; i < size_; i++) {
+      data_[i] = element;
+    }
+  }
 };
 
 template <typename T>

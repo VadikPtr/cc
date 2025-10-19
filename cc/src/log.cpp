@@ -2,7 +2,7 @@
 
 namespace {
   auto g_log_level =
-#ifdef _DEBUG
+#ifdef DEBUG
       LogLevel::Debug
 #else
       LogLevel::Info
