@@ -703,7 +703,7 @@ bool File::try_read_bytes(ArrView<u8> out) const {
     read += current_read;
   } while (read != out.size());
 
-  assert(read == out.size());
+  // assert(read == out.size());
   return read == out.size();
 }
 
