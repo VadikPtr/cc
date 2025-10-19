@@ -137,8 +137,12 @@ mStrParserDeclare(StrWithWrap);
 template <typename T>
 struct StrParser<ArrView<T>> {
   static bool try_parse(StrView str, ArrView<T>& out) {
-    if (str.empty()) return false;
-    if (str[0] != '[') return false;
+    if (str.empty()) {
+      return false;
+    }
+    if (str[0] != '[') {
+      return false;
+    }
     str = str.sub(1);
 
     for (size_t i = 0; i < out.size(); ++i) {
@@ -159,17 +163,48 @@ struct StrParser<ArrView<T>> {
       str = str.sub(i + 1 != out.size() ? pos + 2 : pos);
     }
 
-    if (str.empty()) return false;
-    if (str[0] != ']') return false;
+    if (str.empty()) {
+      return false;
+    }
+    if (str[0] != ']') {
+      return false;
+    }
     return true;
+  }
+};
+
+template <typename T>
+struct StrParser<Arr<T>> {
+  static bool try_parse(StrView str, Arr<T>& out) {
+    if (str.empty()) {
+      return false;
+    }
+    if (str[0] != '(') {
+      return false;
+    }
+    str             = str.sub(1);
+    size_t size_end = str.find(')');
+    if (size_end == StrView::npos) {
+      return false;
+    }
+    size_t arr_size = 0;
+    if (!StrParser<size_t>::try_parse(str.sub(0, size_end), arr_size)) {
+      return false;
+    }
+    out.resize(arr_size);
+    return StrParser<ArrView<T>>::try_parse(str.sub(size_end + 2), out);
   }
 };
 
 template <typename T>
 struct StrParser<List<T>> {
   static bool try_parse(StrView str, List<T>& out) {
-    if (str.empty()) return false;
-    if (str[0] != '[') return false;
+    if (str.empty()) {
+      return false;
+    }
+    if (str[0] != '[') {
+      return false;
+    }
     str = str.sub(1);
 
     for (;;) {
@@ -185,7 +220,7 @@ struct StrParser<List<T>> {
         pos  = str.size() - 1;
         skip = 0;
       }
-      T val;
+      T    val;
       bool res = StrParser<T>::try_parse(str.sub(0, pos), val);
       if (!res) {
         return false;

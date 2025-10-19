@@ -2,6 +2,7 @@
 #include "cc/str.hpp"
 #include "cc/str-view.hpp"
 #include "cc/fmt.hpp"
+#include "cc/error.hpp"
 
 typedef struct ini_t ini_t;
 
@@ -17,7 +18,7 @@ class IniProp {
 
  public:
   IniProp() = default;
-  operator bool() const;
+  explicit operator bool() const;
   explicit operator StrView() const;
   StrView  operator*() const;
   StrView  name() const;
@@ -28,6 +29,9 @@ class IniProp {
 
   template <typename T>
   T value() const {
+    if (!ini_) {
+      throw Err("No value");
+    }
     T result;
     parse_str(value(), result);
     return result;
@@ -35,11 +39,17 @@ class IniProp {
 
   template <typename T>
   void value(T& out) const {
+    if (!ini_) {
+      throw Err("No value");
+    }
     parse_str(value(), out);
   }
 
   template <typename T>
   T value_or(T def) const {
+    if (!ini_) {
+      return def;
+    }
     T result;
     if (!StrParser<T>::try_parse(value(), result)) {
       return def;

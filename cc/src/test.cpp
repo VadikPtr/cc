@@ -41,7 +41,9 @@ TestCaseFail::~TestCaseFail() {
 }
 
 const char* TestCaseFail::what() const noexcept {
-  if (message) return message;
+  if (message) {
+    return message;
+  }
   return "<NO-MESSAGE>";
 }
 

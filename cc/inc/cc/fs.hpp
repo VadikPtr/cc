@@ -71,6 +71,7 @@ class Path {
   void    remove_file() const;
   void    visit_dir(IFileVisitor& visitor, FsDirMode mode = FsDirMode::Default) const;
   Arr<u8> read_bytes() const;
+  Str     read_text() const;
 
   const StrView& view() const { return data_; }
   u64            hash() const { return data_.hash(); }

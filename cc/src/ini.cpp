@@ -1,6 +1,6 @@
 #include "cc/ini.hpp"
-
 #include "cc/str.hpp"
+#include "cc/log.hpp"
 
 // This file contains portions of ini.h library by Mattias Gustavsson.
 /*
@@ -26,6 +26,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+// #ifdef DEBUG
+//   #define mIniLog(...) mLogDebug(__VA_ARGS__)
+// #else
+#define mIniLog(...)
+// #endif
 
 struct ini_internal_section_t {
   char   name[32];
@@ -376,6 +382,7 @@ namespace {
 
   int ini_section_add(ini_t* ini, const char* name, size_t length) {
     if (!ini || !name) {
+      mIniLog("Bad ini");
       return INI_NOT_FOUND;
     }
 
@@ -401,12 +408,14 @@ namespace {
       }
     }
 
+    mIniLog("[ini] add section '", StrView(name, length), "'");
     return ini->section_count++;
   }
 
   void ini_property_add(ini_t* ini, int section, const char* name, size_t name_length,
                         char const* value, size_t value_length) {
     if (!ini || !name || section < 0 || section >= ini->section_count) {
+      mIniLog("Bad ini");
       return;
     }
 
@@ -444,6 +453,8 @@ namespace {
       }
     }
 
+    mIniLog("[ini] add prop '", StrView(name, name_length), "' = '",
+            StrView(value, value_length), "'");
     ++ini->property_count;
   }
 

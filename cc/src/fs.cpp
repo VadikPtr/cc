@@ -534,6 +534,13 @@ Arr<u8> Path::read_bytes() const {
   return res;
 }
 
+Str Path::read_text() const {
+  size_t sz = file_size();
+  Str    res(sz);
+  File(*this, "rb").read_bytes(ArrView<u8>((u8*)res.data(), sz));
+  return res;
+}
+
 Path Path::join(StrView a, StrView b) {
   if (a.empty()) {
     return b;

@@ -28,60 +28,63 @@ last = check \
     }
   }
 
+  mRequire(ini.global());
+  mRequireEqStr(ini.global()["global"].value(), "test"_sv);
+
   mRequire(!ini["Unknown Section"]);
-  mRequire(!ini["Unknown Section"]["Unknown prop"_sv]);
-  mRequire(ini["none"]["unknown"_sv].value_or(2) == 2);
-  mRequireEqStr(ini["Section"]["a"_sv].value(), "1"_sv);
-  mRequire(ini["Section"]["b"_sv].value<u64>() == u64(2));
-  mRequire(ini["Section"]["b"_sv].value_or<u64>(4) == u64(2));
-  mRequireEqStr(ini["Section"]["c"_sv].value<Str>(), "3"_sv);
-  mRequireEqStr(ini["Section"]["d"_sv].value<StrView>(), "4"_sv);
-  mRequireEqStr(ini["Section"]["hello"_sv].value(), "wrold \\\nhmmm"_sv);
-  mRequireEqStr(ini["Section"]["hello"_sv].value<StrWithWrap>().str, "wrold \nhmmm"_sv);
-  mRequireEqStr(ini["Section"]["wrold"_sv].value(), "test"_sv);
-  mRequireEqStr(ini["Section"]["last"_sv].value(), "check \\"_sv);
+  mRequire(!ini["Unknown Section"]["Unknown prop"]);
+  mRequire(ini["none"]["unknown"].value_or(2) == 2);
+  mRequireEqStr(ini["Section"]["a"].value(), "1"_sv);
+  mRequire(ini["Section"]["b"].value<u64>() == u64(2));
+  mRequire(ini["Section"]["b"].value_or<u64>(4) == u64(2));
+  mRequireEqStr(ini["Section"]["c"].value<Str>(), "3"_sv);
+  mRequireEqStr(ini["Section"]["d"].value<StrView>(), "4"_sv);
+  mRequireEqStr(ini["Section"]["hello"].value(), "wrold \\\nhmmm"_sv);
+  mRequireEqStr(ini["Section"]["hello"].value<StrWithWrap>().str, "wrold \nhmmm"_sv);
+  mRequireEqStr(ini["Section"]["wrold"].value(), "test"_sv);
+  mRequireEqStr(ini["Section"]["last"].value(), "check \\"_sv);
 
   int arr[3] = {};
-  ini["Section"]["arr"_sv].value(arr);
+  ini["Section"]["arr"].value(arr);
   mRequire(arr[0] == 1);
   mRequire(arr[1] == 2);
   mRequire(arr[2] == 3);
 
-  ini["Section"]["hello"_sv].remove();
-  mRequire(!ini["Section"]["hello"_sv]);
-  mRequireEqStr(ini["Section"]["a"_sv].value(), "1"_sv);
-  mRequireEqStr(ini["Section"]["b"_sv].value(), "2"_sv);
-  mRequireEqStr(ini["Section"]["c"_sv].value(), "3"_sv);
-  mRequireEqStr(ini["Section"]["d"_sv].value(), "4"_sv);
-  mRequireEqStr(ini["Section"]["wrold"_sv].value(), "test"_sv);
-  mRequireEqStr(ini["Section"]["last"_sv].value(), "check \\"_sv);
+  ini["Section"]["hello"].remove();
+  mRequire(!ini["Section"]["hello"]);
+  mRequireEqStr(ini["Section"]["a"].value(), "1"_sv);
+  mRequireEqStr(ini["Section"]["b"].value(), "2"_sv);
+  mRequireEqStr(ini["Section"]["c"].value(), "3"_sv);
+  mRequireEqStr(ini["Section"]["d"].value(), "4"_sv);
+  mRequireEqStr(ini["Section"]["wrold"].value(), "test"_sv);
+  mRequireEqStr(ini["Section"]["last"].value(), "check \\"_sv);
 
   mRequire(ini["Section to remove"]);
   ini["Section to remove"].remove();
   mRequire(!ini["Section to remove"]);
-  mRequireEqStr(ini["Section"]["a"_sv].value(), "1"_sv);
-  mRequireEqStr(ini["Section"]["b"_sv].value(), "2"_sv);
-  mRequireEqStr(ini["Section"]["c"_sv].value(), "3"_sv);
-  mRequireEqStr(ini["Section"]["d"_sv].value(), "4"_sv);
-  mRequireEqStr(ini["Section"]["wrold"_sv].value(), "test"_sv);
-  mRequireEqStr(ini["Section"]["last"_sv].value(), "check \\"_sv);
+  mRequireEqStr(ini["Section"]["a"].value(), "1"_sv);
+  mRequireEqStr(ini["Section"]["b"].value(), "2"_sv);
+  mRequireEqStr(ini["Section"]["c"].value(), "3"_sv);
+  mRequireEqStr(ini["Section"]["d"].value(), "4"_sv);
+  mRequireEqStr(ini["Section"]["wrold"].value(), "test"_sv);
+  mRequireEqStr(ini["Section"]["last"].value(), "check \\"_sv);
 
   Ini copy;
   copy = ini;
-  mRequireEqStr(ini["Section"]["a"_sv].value(), "1"_sv);
-  mRequireEqStr(ini["Section"]["b"_sv].value(), "2"_sv);
-  mRequireEqStr(ini["Section"]["c"_sv].value(), "3"_sv);
-  mRequireEqStr(ini["Section"]["d"_sv].value(), "4"_sv);
-  mRequireEqStr(ini["Section"]["wrold"_sv].value(), "test"_sv);
-  mRequireEqStr(ini["Section"]["last"_sv].value(), "check \\"_sv);
+  mRequireEqStr(ini["Section"]["a"].value(), "1"_sv);
+  mRequireEqStr(ini["Section"]["b"].value(), "2"_sv);
+  mRequireEqStr(ini["Section"]["c"].value(), "3"_sv);
+  mRequireEqStr(ini["Section"]["d"].value(), "4"_sv);
+  mRequireEqStr(ini["Section"]["wrold"].value(), "test"_sv);
+  mRequireEqStr(ini["Section"]["last"].value(), "check \\"_sv);
 
-  mRequireEqStr(copy["Section"]["a"_sv].value(), "1"_sv);
-  mRequireEqStr(copy["Section"]["b"_sv].value(), "2"_sv);
-  mRequireEqStr(copy["Section"]["c"_sv].value(), "3"_sv);
-  mRequireEqStr(copy["Section"]["d"_sv].value(), "4"_sv);
-  mRequireEqStr(copy["Section"]["wrold"_sv].value(), "test"_sv);
-  mRequireEqStr(copy["Section"]["last"_sv].value(), "check \\"_sv);
+  mRequireEqStr(copy["Section"]["a"].value(), "1"_sv);
+  mRequireEqStr(copy["Section"]["b"].value(), "2"_sv);
+  mRequireEqStr(copy["Section"]["c"].value(), "3"_sv);
+  mRequireEqStr(copy["Section"]["d"].value(), "4"_sv);
+  mRequireEqStr(copy["Section"]["wrold"].value(), "test"_sv);
+  mRequireEqStr(copy["Section"]["last"].value(), "check \\"_sv);
 
-  mRequire(copy["Section"]["last"_sv].value().data() !=
-           ini["Section"]["last"_sv].value().data());
+  mRequire(copy["Section"]["last"].value().data() !=
+           ini["Section"]["last"].value().data());
 }

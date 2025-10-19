@@ -11,14 +11,15 @@ class StackTrace {
 };
 
 class Err : public std::exception {
-  Str        what_;
-  StackTrace trace_;
+  Str what_;
+  // StackTrace trace_;
 
  public:
   Err() : Err(Str("Unknown error")) {}
-  Err(Str what) : what_(move(what)) {}
+  explicit Err(Str what) : what_(move(what)) {}
+  explicit Err(StrView what) : what_(what) {}
   ~Err() override = default;
 
-  StrView           message() const { return what_; }
-  const StackTrace& stack_trace() const { return trace_; }
+  StrView message() const { return what_; }
+  // const StackTrace& stack_trace() const { return trace_; }
 };
