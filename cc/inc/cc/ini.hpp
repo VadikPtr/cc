@@ -56,11 +56,11 @@ class IniSection {
 
  public:
   IniSection() = default;
-  operator bool() const;
-  IniProp operator[](StrView name) const;
-  StrView name() const;
-  void    set_name(StrView name);
-  void    remove();
+  explicit operator bool() const;
+  IniProp  operator[](StrView name) const;
+  StrView  name() const;
+  void     set_name(StrView name);
+  void     remove();
 
   class Iterator {
     ini_t* ini_               = nullptr;
@@ -104,6 +104,7 @@ class Ini {
   Str        to_str() const;
   IniSection operator[](StrView name) const;
   IniSection operator[](size_t section_index) const;
+  IniSection global() const { return operator[](0); }
   size_t     section_count() const;
 
   class Iterator {
