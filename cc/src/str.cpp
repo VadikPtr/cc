@@ -221,9 +221,10 @@ void Str::resize(size_t required_size) {
   size_ = required_size;
 }
 
-void Str::null_terminate() {
+Str& Str::null_terminate() {
   resize(size_ + 1);
   data_[size_ - 1] = 0;
+  return *this;
 }
 
 Str& Str::operator+=(StrView o) {

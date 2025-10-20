@@ -59,7 +59,7 @@ class Str : public StrView {
   ~Str();
 
   void resize(size_t required_size);
-  void null_terminate();
+  Str& null_terminate();
 
   Str& operator+=(StrView o);
 
