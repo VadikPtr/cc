@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include "cc/math.hpp"
 
 // TODO: operator[] for vectors is done by very strange way so compiler MAYBE will not
@@ -623,29 +624,87 @@ mMathInlineFunc Vec3 lerp(const Vec3& a, const Vec3& b, f32 t) {
   return a * (1.0f - t) + b * t;
 }
 
+mMathInlineFunc mFmtImpl(Float2) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(Float3) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(Float4) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(UInt2) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
 mMathInlineFunc mFmtImpl(Int2) {
-  ArrView arr{const_cast<s32*>(reinterpret_cast<const s32*>(&v)), 2};
-  Fmt<ArrView<s32>>::format(arr, out);
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(USize2) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(ISize2) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(FSize2) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
+mMathInlineFunc mFmtImpl(FSize3) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
 }
 
 mMathInlineFunc mFmtImpl(Vec2) {
-  ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 2};
-  Fmt<ArrView<f32>>::format(arr, out);
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
 }
 
 mMathInlineFunc mFmtImpl(Vec3) {
-  ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 3};
-  Fmt<ArrView<f32>>::format(arr, out);
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
 }
 
 mMathInlineFunc mFmtImpl(Vec4) {
-  ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 4};
-  Fmt<ArrView<f32>>::format(arr, out);
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
 }
 
 mMathInlineFunc mFmtImpl(Quat) {
-  ArrView arr{const_cast<f32*>(reinterpret_cast<const f32*>(&v)), 4};
-  Fmt<ArrView<f32>>::format(arr, out);
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
 }
 
 mMathInlineFunc mFmtImpl(Mat4) {
