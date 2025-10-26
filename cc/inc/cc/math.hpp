@@ -99,6 +99,7 @@ struct Vec3 {
   Vec3 rotate_x(f32 angle) const;
   Vec3 rotate_y(f32 angle) const;
   Vec3 rotate_z(f32 angle) const;
+  Vec2 to_vec2() const;
 
   static Vec3 from_color_hex(u32 value);
 

@@ -162,6 +162,9 @@ mMathInlineFunc Vec3 Vec3::rotate_z(f32 angle) const {
   f32 sin = sinf(angle);
   return {x * cos - y * sin, x * sin + y * cos, z};
 }
+mMathInlineFunc Vec2 Vec3::to_vec2() const {
+  return {x, y};
+}
 
 mMathInlineFunc Vec3 Vec3::from_color_hex(u32 value) {
   return {
@@ -367,6 +370,10 @@ mMathInlineFunc Mat3 operator*(const Mat3& a, const Mat3& b) {
 
 mMathInlineFunc Vec3 operator*(const Mat3& m, const Vec3& v) {
   return {dot(m.row(0), v), dot(m.row(1), v), dot(m.row(2), v)};
+}
+mMathInlineFunc Vec2 operator*(const Mat3& m, const Vec2& v) {
+  Vec3 pr = m * Vec3(v.x, v.y, 1);
+  return pr.to_vec2() / pr.z;
 }
 mMathInlineFunc Mat3 operator*(const Mat3& m, f32 a) {
   return {m.col(0) * a, m.col(1) * a, m.col(2) * a};
