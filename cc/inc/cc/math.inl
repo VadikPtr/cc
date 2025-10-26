@@ -58,7 +58,9 @@ mMathInlineFunc Vec2 operator*(f32 a, const Vec2& b) {
 mMathInlineFunc Vec2 operator/(f32 a, const Vec2& b) {
   return Vec2(a) / b;
 }
-
+f32 dot(const Vec2& a, const Vec2& b) {
+  return a.x * b.x + a.y * b.y;
+}
 
 mMathInlineFunc Vec3::Vec3() : x(0), y(0), z(0) {}
 
@@ -238,6 +240,66 @@ mMathInlineFunc f32 dot(const Vec4& a, const Vec4& b) {
   return a.dot(b);
 }
 
+// mat2
+
+mMathInlineFunc Mat2::Mat2(f32 a) : v{Column(a, 0), Column(0, a)} {}
+
+mMathInlineFunc Mat2::Mat2() : Mat2(1) {}
+
+mMathInlineFunc Mat2::Mat2(f32 a, f32 b) : v{Column(a, 0), Column(0, b)} {}
+
+mMathInlineFunc Mat2::Mat2(Column a, Column b) : v{a, b} {}
+
+mMathInlineFunc Mat2::Column& Mat2::col(size_t i) {
+  return v[i];
+}
+mMathInlineFunc Mat2::Column Mat2::col(size_t i) const {
+  return v[i];
+}
+mMathInlineFunc Mat2::Row Mat2::row(size_t i) const {
+  return {v[0][i], v[1][i]};
+}
+
+mMathInlineFunc f32 Mat2::determinant() const {
+  return v[0][0] * v[1][1] - v[0][1] * v[1][0];
+}
+
+mMathInlineFunc Mat2 Mat2::inverse() const {
+  f32  oneOverDet = 1.0f / determinant();
+  Mat2 inverse;
+  inverse.v[0][0] = v[1][1] * oneOverDet;
+  inverse.v[0][1] = -v[0][1] * oneOverDet;
+  inverse.v[1][0] = -v[1][0] * oneOverDet;
+  inverse.v[1][1] = v[0][0] * oneOverDet;
+  return inverse;
+}
+
+mMathInlineFunc Mat2 Mat2::transpose() const {
+  return {row(0), row(1)};
+}
+
+mMathInlineFunc Mat2 operator*(const Mat2& a, const Mat2& b) {
+  auto arow0 = a.row(0);  // rows is bad for processor, cache it first
+  auto arow1 = a.row(1);
+  return {{dot(arow0, b.col(0)), dot(arow1, b.col(0))},
+          {dot(arow0, b.col(1)), dot(arow1, b.col(1))}};
+}
+
+mMathInlineFunc Vec2 operator*(const Mat2& m, const Vec2& v) {
+  return {dot(m.row(0), v), dot(m.row(1), v)};
+}
+mMathInlineFunc Mat2 operator*(const Mat2& m, f32 a) {
+  return {m.col(0) * a, m.col(1) * a};
+}
+mMathInlineFunc Mat2 operator*(f32 a, const Mat2& m) {
+  return {m.col(0) * a, m.col(1) * a};
+}
+mMathInlineFunc Mat2 operator-(const Mat2& a) {
+  return {-a.col(0), -a.col(1)};
+}
+
+// mat3
+
 mMathInlineFunc Mat3::Mat3(f32 a)
     : v{Column(a, 0, 0), Column(0, a, 0), Column(0, 0, a)} {}
 
@@ -263,7 +325,6 @@ mMathInlineFunc f32 Mat3::determinant() const {
          v[1][0] * (v[0][1] * v[2][2] - v[2][1] * v[0][2]) +
          v[2][0] * (v[0][1] * v[1][2] - v[1][1] * v[0][2]);
 }
-
 mMathInlineFunc Mat3 Mat3::inverse() const {
   f32 oneOverDet = 1.0f / determinant();
 
@@ -281,9 +342,18 @@ mMathInlineFunc Mat3 Mat3::inverse() const {
 
   return {c1, c2, c3};
 }
-
 mMathInlineFunc Mat3 Mat3::transpose() const {
   return {row(0), row(1), row(2)};
+}
+mMathInlineFunc Mat3 Mat3::translation(const Vec2& v) {
+  return Mat3(Column(1, 0, 0),  //
+              Column(0, 1, 0),  //
+              Column(v.x, v.y, 1));
+}
+mMathInlineFunc Mat3 Mat3::scaling(const Vec2& v) {
+  return Mat3(Column(v.x, 0, 0),  //
+              Column(0, v.y, 0),  //
+              Column(0, 0, 1));
 }
 
 mMathInlineFunc Mat3 operator*(const Mat3& a, const Mat3& b) {
@@ -308,17 +378,24 @@ mMathInlineFunc Mat3 operator-(const Mat3& a) {
   return {-a.col(0), -a.col(1), -a.col(2)};
 }
 
+// mat4
+
 mMathInlineFunc Mat4::Mat4() : Mat4(1) {}
 
 mMathInlineFunc Mat4::Mat4(f32 a)
     : v{Column(a, 0, 0, 0), Column(0, a, 0, 0), Column(0, 0, a, 0), Column(0, 0, 0, a)} {}
 
 mMathInlineFunc Mat4::Mat4(const Mat3& a)
-    : v{Column(a.col(0), 0), Column(a.col(1), 0), Column(a.col(2), 0),
+    : v{Column(a.col(0), 0),  //
+        Column(a.col(1), 0),  //
+        Column(a.col(2), 0),  //
         Column(0, 0, 0, 1)} {}
 
 mMathInlineFunc Mat4::Mat4(f32 a, f32 b, f32 c, f32 d)
-    : v{Column(a, 0, 0, 0), Column(0, b, 0, 0), Column(0, 0, c, 0), Column(0, 0, 0, d)} {}
+    : v{Column(a, 0, 0, 0),  //
+        Column(0, b, 0, 0),  //
+        Column(0, 0, c, 0),  //
+        Column(0, 0, 0, d)} {}
 
 mMathInlineFunc Mat4::Mat4(Column a, Column b, Column c, Column d) : v{a, b, c, d} {}
 
@@ -398,7 +475,10 @@ mMathInlineFunc Mat3 Mat4::to_mat3() const {
 }
 
 mMathInlineFunc Mat4 Mat4::translation(const Vec3& v) {
-  return {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {v.x, v.y, v.z, 1}};
+  return {{1, 0, 0, 0},  //
+          {0, 1, 0, 0},  //
+          {0, 0, 1, 0},  //
+          {v.x, v.y, v.z, 1}};
 }
 
 mMathInlineFunc Mat4 Mat4::rotation(const Vec3& axis, f32 angle) {
@@ -423,7 +503,10 @@ mMathInlineFunc Mat4 Mat4::rotation(const Vec3& axis, f32 angle) {
 }
 
 mMathInlineFunc Mat4 Mat4::scaling(const Vec3& v) {
-  return {{v.x, 0, 0, 0}, {0, v.y, 0, 0}, {0, 0, v.z, 0}, {0, 0, 0, 1}};
+  return {{v.x, 0, 0, 0},  //
+          {0, v.y, 0, 0},  //
+          {0, 0, v.z, 0},  //
+          {0, 0, 0, 1}};
 }
 
 mMathInlineFunc Mat4 Mat4::look_at(const Vec3& pos, const Vec3& target, const Vec3& up) {

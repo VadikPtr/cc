@@ -70,6 +70,7 @@ Vec2 operator*(const Vec2& a, f32 b);
 Vec2 operator/(const Vec2& a, f32 b);
 Vec2 operator*(f32 a, const Vec2& b);
 Vec2 operator/(f32 a, const Vec2& b);
+f32  dot(const Vec2& a, const Vec2& b);
 
 
 struct Vec3 {
@@ -154,6 +155,36 @@ f32  dot(const Vec4& a, const Vec4& b);
 
 
 // column major
+struct Mat2 {
+  using Column = Vec2;
+  using Row    = Vec2;
+  Column v[2];
+
+  Mat2();       // identity
+  Mat2(f32 a);  // diagonal
+  Mat2(f32 a, f32 b);
+  Mat2(Column a, Column b);
+
+  Mat2(const Mat2&)            = default;
+  Mat2& operator=(const Mat2&) = default;
+
+  Column& col(size_t i);
+  Column  col(size_t i) const;
+  Row     row(size_t i) const;
+
+  f32  determinant() const;
+  Mat2 inverse() const;
+  Mat2 transpose() const;
+};
+
+Mat2 operator*(const Mat2& a, const Mat2& b);
+Vec2 operator*(const Mat2& m, const Vec2& v);
+Mat2 operator*(const Mat2& m, f32 a);
+Mat2 operator*(f32 a, const Mat2& m);
+Mat2 operator-(const Mat2& a);
+
+
+// column major
 struct Mat3 {
   using Column = Vec3;
   using Row    = Vec3;
@@ -174,10 +205,14 @@ struct Mat3 {
   f32  determinant() const;
   Mat3 inverse() const;
   Mat3 transpose() const;
+
+  static Mat3 translation(const Vec2& v);
+  static Mat3 scaling(const Vec2& v);
 };
 
 Mat3 operator*(const Mat3& a, const Mat3& b);
 Vec3 operator*(const Mat3& m, const Vec3& v);
+Vec2 operator*(const Mat3& m, const Vec2& v);
 Mat3 operator*(const Mat3& m, f32 a);
 Mat3 operator*(f32 a, const Mat3& m);
 Mat3 operator-(const Mat3& a);
