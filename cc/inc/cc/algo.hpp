@@ -2,6 +2,7 @@
 #include "cc/common.hpp"
 #include "cc/arr-view.hpp"
 
+// TODO: this is bubble sort, not very cache friendly, need insertion sort
 template <typename T, typename TFunc>
 void sort(ArrView<T> arr, TFunc&& compare_func) {
   if (arr.empty() || arr.size() == 1) {
