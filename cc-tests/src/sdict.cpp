@@ -2,7 +2,8 @@
 #include "cc/sdict.hpp"
 
 mTestCase(sdict) {
-  SDict<u64, StrView, 16> dict;
+  SDict<u64, StrView> dict;
+  dict.resize(3);
 
   dict.sort();
   mRequire(dict.find(1) == nullptr);

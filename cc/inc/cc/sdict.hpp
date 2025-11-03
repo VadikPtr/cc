@@ -1,21 +1,25 @@
 #pragma once
 #include "cc/common.hpp"
+#include "cc/arr.hpp"
 
-template <typename TKey, typename TValue, size_t g_storage_size>
+template <typename TKey, typename TValue>
 class SDict {
-  TKey   keys_[g_storage_size]   = {};
-  TValue values_[g_storage_size] = {};
-  size_t size_                   = 0;
+  Arr<TKey>   keys_;
+  Arr<TValue> values_;
+  size_t      size_ = 0;
 
  public:
   using Key   = TKey;
   using Value = TValue;
 
-  SDict() = default;
+  void resize(size_t size) {
+    keys_.resize(size);
+    values_.resize(size);
+  }
 
   // expects key to be unique, does no checks for it
   void insert(TKey key, TValue value) {
-    assert(size_ < g_storage_size);
+    assert(size_ < keys_.size());
     keys_[size_]   = move(key);
     values_[size_] = move(value);
     size_++;
