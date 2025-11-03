@@ -92,3 +92,7 @@ class StrHash {
   bool operator==(const StrHash& o) const { return hash_ == o.hash_; }
   bool operator!=(const StrHash& o) const { return hash_ != o.hash_; }
 };
+
+inline StrHash operator""_sh(const char* cstr, size_t size) {
+  return StrHash(StrView(cstr, size));
+}
