@@ -534,6 +534,14 @@ Arr<u8> Path::read_bytes() const {
   return res;
 }
 
+Str Path::read_ctext() const {
+  size_t sz = file_size();
+  Str    res(sz + 1);
+  File(*this, "rb").read_bytes(ArrView<u8>((u8*)res.data(), sz));
+  res[sz] = 0;
+  return res;
+}
+
 Str Path::read_text() const {
   size_t sz = file_size();
   Str    res(sz);
