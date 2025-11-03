@@ -46,7 +46,7 @@ class SDict {
     }
   }
 
-  TValue operator[](const TKey& key) {
+  TValue& operator[](const TKey& key) {
     TValue* value = find(key);
     assert(value);
     return *value;
