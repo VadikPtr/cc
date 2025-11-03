@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include "cc/common.hpp"
 #include "cc/hash.hpp"
 
@@ -193,7 +194,11 @@ class Dict final : details::DictV {
     new (dst) TKey(*static_cast<const TKey*>(src));
   }
   static void v_copy_value(void* dst, void* src) {
-    new (dst) TValue(*static_cast<const TValue*>(src));
+    if constexpr (std::is_copy_constructible_v<TValue>) {
+      new (dst) TValue(*static_cast<const TValue*>(src));
+    } else {
+      assert(false);
+    }
   }
   static void v_move_bucket(void* dst, void* src) {
     new (dst) Bucket(move(*static_cast<Bucket*>(src)));
