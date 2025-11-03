@@ -53,6 +53,7 @@ class SDict {
   }
 
   // returns null when not found
+  // TODO: fix s32 indexing
   TValue* find(const TKey& key) {
     if (size_ == 0) {
       return nullptr;
@@ -60,14 +61,14 @@ class SDict {
     if (size_ == 1) {
       return keys_[0] == key ? &values_[0] : nullptr;
     }
-    size_t low  = 0;
-    size_t high = size_ - 1;
+    s32 low  = 0;
+    s32 high = s32(size_) - 1;
     while (low <= high) {
-      size_t mid = low + (high - low) / 2;
-      if (keys_[mid] == key) {
-        return &values_[mid];
+      s32 mid = low + (high - low) / 2;
+      if (keys_[size_t(mid)] == key) {
+        return &values_[size_t(mid)];
       }
-      if (keys_[mid] < key) {
+      if (keys_[size_t(mid)] < key) {
         low = mid + 1;
       } else {
         high = mid - 1;

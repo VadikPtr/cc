@@ -24,6 +24,7 @@ mTestCase(sdict) {
   dict.insert(1, "2");
   dict.sort();
 
+  mRequire(dict.find(0) == nullptr);
   mRequire(dict.find(1) != nullptr);
   mRequireEqStr(dict[1], "2");
   mRequire(dict.find(2) != nullptr);
