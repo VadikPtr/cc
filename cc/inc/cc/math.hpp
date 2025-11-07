@@ -303,7 +303,9 @@ f32 ease_in_out_cubic(f32 x);
 
 f32  to_radians(f32 x);
 Vec3 to_radians(const Vec3& v);
+Vec2 lerp(const Vec2& a, const Vec2& b, f32 t);
 Vec3 lerp(const Vec3& a, const Vec3& b, f32 t);
+Vec4 lerp(const Vec4& a, const Vec4& b, f32 t);
 
 struct CameraMath {
   Vec3 position     = {0, 0, 0};

@@ -710,7 +710,13 @@ mMathInlineFunc f32 to_radians(f32 x) {
 mMathInlineFunc Vec3 to_radians(const Vec3& v) {
   return {to_radians(v.x), to_radians(v.y), to_radians(v.z)};
 }
+mMathInlineFunc Vec2 lerp(const Vec2& a, const Vec2& b, f32 t) {
+  return a * (1.0f - t) + b * t;
+}
 mMathInlineFunc Vec3 lerp(const Vec3& a, const Vec3& b, f32 t) {
+  return a * (1.0f - t) + b * t;
+}
+mMathInlineFunc Vec4 lerp(const Vec4& a, const Vec4& b, f32 t) {
   return a * (1.0f - t) + b * t;
 }
 
