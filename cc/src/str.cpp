@@ -93,6 +93,16 @@ StrView StrBuilder::view() const {
   return {data_, size_};
 }
 
+void StrBuilder::remove_last() {
+  if (size_ > 0) {
+    --size_;
+  }
+}
+
+void StrBuilder::reset() {
+  size_ = 0;
+}
+
 void StrBuilder::init() {
   data_     = small_buffer_;
   size_     = 0;

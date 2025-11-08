@@ -28,6 +28,8 @@ class StrBuilder {
   void append(char c);
   Str  to_string();
   StrView view() const;
+  void    remove_last();
+  void    reset();
 
  private:
   void init();
