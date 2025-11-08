@@ -11,7 +11,8 @@
   #define mMathInlineFunc inline
 #endif
 
-inline constexpr f32 g_pi = 3.141592653589793f;
+inline constexpr f32 g_pi  = 3.141592653589793f;
+inline constexpr f32 g_eps = 0.0001f;
 
 // simplified types for glsl
 struct Float2 {
@@ -292,6 +293,11 @@ Quat operator/(const Quat& a, f32 b);
 f32  dot(const Quat& a, const Quat& b);
 Quat cross(const Quat& a, const Quat& b);
 
+
+bool feq(f32 a, f32 b, f32 eps = g_eps);
+bool feq(Vec2 a, Vec2 b, f32 eps = g_eps);
+bool feq(Vec3 a, Vec3 b, f32 eps = g_eps);
+bool feq(Vec4 a, Vec4 b, f32 eps = g_eps);
 
 f32 ease_in_quad(f32 x);
 f32 ease_out_quad(f32 x);

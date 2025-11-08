@@ -678,6 +678,19 @@ mMathInlineFunc Quat cross(const Quat& a, const Quat& b) {
   return a.cross(b);
 }
 
+mMathInlineFunc bool feq(f32 a, f32 b, f32 eps) {
+  return fabs(a - b) < eps;
+}
+mMathInlineFunc bool feq(Vec2 a, Vec2 b, f32 eps) {
+  return feq(a.x, b.x, eps) and feq(a.y, b.y, eps);
+}
+mMathInlineFunc bool feq(Vec3 a, Vec3 b, f32 eps) {
+  return feq(a.x, b.x, eps) and feq(a.y, b.y, eps) and feq(a.z, b.z, eps);
+}
+mMathInlineFunc bool feq(Vec4 a, Vec4 b, f32 eps) {
+  return feq(a.x, b.x, eps) and feq(a.y, b.y, eps) and feq(a.z, b.z, eps) and
+         feq(a.w, b.w, eps);
+}
 
 mMathInlineFunc f32 ease_in_quad(f32 x) {
   return x * x;
