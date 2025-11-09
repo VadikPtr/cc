@@ -230,3 +230,33 @@ mTestCase(list_backwards) {
   mRequire(it.has_value());
   mRequire(*it == 1);
 }
+
+
+mTestCase(list_remove_next) {
+  List<int> l;
+  parse_str("[1, 2, 3]", l);
+
+  auto it = l.end();
+  --it;  // 3
+  --it;  // 2
+  mRequire(it.has_value());
+  mRequire(*it == 2);
+  mRequire(l.remove(it) == 2);
+  ++it;
+  mRequire(*it == 3);
+}
+
+
+mTestCase(list_remove_prev) {
+  List<int> l;
+  parse_str("[1, 2, 3]", l);
+
+  auto it = l.end();
+  --it;  // 3
+  --it;  // 2
+  mRequire(it.has_value());
+  mRequire(*it == 2);
+  mRequire(l.remove(it) == 2);
+  --it;
+  mRequire(*it == 1);
+}

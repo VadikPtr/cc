@@ -37,18 +37,17 @@ class List {
     }
 
     Iterator& operator++() {
-      prev_    = current_;
-      current_ = next_;
-      next_    = current_ ? current_->next : nullptr;
+      *this = next();
       return *this;
     }
 
     Iterator& operator--() {
-      next_    = current_;
-      current_ = prev_;
-      prev_    = current_ ? current_->prev : nullptr;
+      *this = prev();
       return *this;
     }
+
+    Iterator prev() { return Iterator(prev_, current_, prev_ ? prev_->prev : nullptr); }
+    Iterator next() { return Iterator(next_, next_ ? next_->next : nullptr, current_); }
 
     bool operator==(const Iterator& o) const { return o.current_ == current_; }
   };
@@ -133,7 +132,7 @@ class List {
     size_  = 0;
   }
 
-  T remove(Iterator& it) {  // TODO: this should modify iterator to restore state
+  T remove(Iterator& it) {
     auto* node = it.node();
     if (node->prev) {
       node->prev->next = node->next;
