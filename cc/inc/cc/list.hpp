@@ -17,23 +17,36 @@ class List {
   class Iterator {
     Node* current_ = nullptr;
     Node* next_    = nullptr;
+    Node* prev_    = nullptr;
 
    public:
-    Iterator(Node* current = nullptr)
-        : current_(current), next_(current ? current->next : nullptr) {}
+    Iterator(Node* current, Node* next, Node* prev)
+        : current_(current), next_(next), prev_(prev) {}
 
-    T*    operator->() const { return &current_->value; }
-    T&    operator*() const { return current_->value; }
     Node* node() const { return current_; }
+    bool  has_value() const { return current_; }
+
+    T* operator->() const {
+      assert(has_value());
+      return &current_->value;
+    }
+
+    T& operator*() const {
+      assert(has_value());
+      return current_->value;
+    }
 
     Iterator& operator++() {
-      assert(current_ != nullptr);
+      prev_    = current_;
       current_ = next_;
-      if (current_) {
-        next_ = current_->next;
-      } else {
-        next_ = nullptr;
-      }
+      next_    = current_ ? current_->next : nullptr;
+      return *this;
+    }
+
+    Iterator& operator--() {
+      next_    = current_;
+      current_ = prev_;
+      prev_    = current_ ? current_->prev : nullptr;
       return *this;
     }
 
@@ -92,10 +105,20 @@ class List {
 
   ~List() { clear(); }
 
-  bool          empty() const { return size_ == 0; }
-  size_t        size() const { return size_; }
-  Iterator      begin() { return Iterator{front_}; }
-  Iterator      end() { return Iterator{}; }
+  bool     empty() const { return size_ == 0; }
+  size_t   size() const { return size_; }
+  Iterator begin() {
+    Node* current = front_;
+    Node* next    = front_ ? front_->next : nullptr;
+    Node* prev    = nullptr;
+    return Iterator(current, next, prev);
+  }
+  Iterator end() {
+    Node* current = nullptr;
+    Node* next    = nullptr;
+    Node* prev    = back_;
+    return Iterator(current, next, prev);
+  }
   ConstIterator begin() const { return {front_}; }
   ConstIterator end() const { return {}; }
 
@@ -110,7 +133,7 @@ class List {
     size_  = 0;
   }
 
-  T remove(const Iterator& it) {
+  T remove(Iterator& it) {  // TODO: this should modify iterator to restore state
     auto* node = it.node();
     if (node->prev) {
       node->prev->next = node->next;

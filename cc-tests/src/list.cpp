@@ -1,3 +1,4 @@
+#include "cc/log.hpp"
 #include "cc/test.hpp"
 #include "cc/list.hpp"
 #include "cc/fmt.hpp"
@@ -194,4 +195,38 @@ mTestCase(list_conv) {
   parse_str("[]", l);
   mRequire(l.size() == 0);
   mRequire(l.empty());
+}
+
+
+mTestCase(list_backwards) {
+  List<int> l;
+  parse_str("[1, 2, 3]", l);
+
+  auto it = l.end();
+  mLogDebug("end()");
+  mRequire(not it.has_value());
+
+  mLogDebug("3");
+  --it;
+  mRequire(it.has_value());
+  mRequire(*it == 3);
+
+  mLogDebug("2");
+  --it;
+  mRequire(it.has_value());
+  mRequire(*it == 2);
+
+  mLogDebug("1");
+  --it;
+  mRequire(it.has_value());
+  mRequire(*it == 1);
+
+  mLogDebug("begin()");
+  --it;
+  mRequire(not it.has_value());
+
+  mLogDebug("1");
+  ++it;
+  mRequire(it.has_value());
+  mRequire(*it == 1);
 }
