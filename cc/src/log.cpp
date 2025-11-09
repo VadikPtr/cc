@@ -9,7 +9,8 @@ namespace {
 #endif
       ;
 
-  File g_log_file;
+  File                    g_log_file;
+  List<void (*)(StrView)> g_handlers;
 }  // namespace
 
 void log_set_level(LogLevel level) {
@@ -26,7 +27,7 @@ void log_open_file() {
 
 void log_open_file(const Path& path) {
   if (!g_log_file.try_open(path, "wb")) {
-    fprintf(stderr, "Error: cannot open log file!\n");
+    fputs("Error: cannot open log file!\n", stderr);
   }
 }
 
@@ -35,14 +36,22 @@ bool log_is_enabled(LogLevel level) {
 }
 
 void log_write(StrBuilder& builder) {
-  auto line = builder.to_string();
+  StrView line = builder.view();
   fwrite(line.data(), line.size(), 1, stdout);
 
   if (g_log_file.is_valid()) {
     if (!g_log_file.try_write_bytes(to_bytes(line))) {
-      fprintf(stdout, "Error: cannot write log file\n");
+      fputs("Error: cannot write log file\n", stdout);
     }
   }
 
   fflush(stdout);
+
+  for (const auto& handler : g_handlers) {
+    handler(line);
+  }
+}
+
+void log_add_handler(void (*func)(StrView)) {
+  g_handlers.push_back(func);
 }

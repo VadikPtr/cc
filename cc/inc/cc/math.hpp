@@ -29,6 +29,8 @@ struct UInt2 {
 };
 struct Int2 {
   s32 x = 0, y = 0;
+  Int2() = default;
+  explicit Int2(const struct Vec2&);
 };
 struct USize2 {
   u32 x = 0, y = 0, width = 0, height = 0;

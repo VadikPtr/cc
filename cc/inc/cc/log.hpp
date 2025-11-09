@@ -2,7 +2,6 @@
 #include "cc/fs.hpp"
 #include "cc/fmt.hpp"
 #include "cc/time.hpp"
-#include "cc/error.hpp"
 
 enum class LogLevel {
   Debug,
@@ -16,6 +15,7 @@ void log_open_file();
 void log_open_file(const Path& path);
 bool log_is_enabled(LogLevel level);
 void log_write(StrBuilder& builder);
+void log_add_handler(void (*func)(StrView));
 
 #define mLogWrite(level, ...)                           \
   StrBuilder builder;                                   \

@@ -6,6 +6,8 @@
 //   optimize those code, so it needs reworking
 // TODO: for normalization inversesqrt algorithm can help
 
+Int2::Int2(const Vec2& v) : x(s32(v.x)), y(s32(v.y)) {}
+
 mMathInlineFunc Vec2::Vec2() : x(0), y(0) {}
 
 mMathInlineFunc Vec2::Vec2(f32 v) : x(v), y(v) {}
