@@ -9,8 +9,9 @@ namespace {
 #endif
       ;
 
-  File                    g_log_file;
-  List<void (*)(StrView)> g_handlers;
+  File g_log_file;
+
+  List<void (*)(LogLevel, StrView)> g_handlers;
 }  // namespace
 
 void log_set_level(LogLevel level) {
@@ -35,7 +36,7 @@ bool log_is_enabled(LogLevel level) {
   return level >= g_log_level;
 }
 
-void log_write(StrBuilder& builder) {
+void log_write(LogLevel level, StrBuilder& builder) {
   StrView line = builder.view();
   fwrite(line.data(), line.size(), 1, stdout);
 
@@ -48,10 +49,10 @@ void log_write(StrBuilder& builder) {
   fflush(stdout);
 
   for (const auto& handler : g_handlers) {
-    handler(line);
+    handler(level, line);
   }
 }
 
-void log_add_handler(void (*func)(StrView)) {
+void log_add_handler(void (*func)(LogLevel, StrView)) {
   g_handlers.push_back(func);
 }
