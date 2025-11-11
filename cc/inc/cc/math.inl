@@ -32,6 +32,9 @@ mMathInlineFunc Vec2& Vec2::operator-=(const Vec2& a) {
   y -= a.y;
   return *this;
 }
+mMathInlineFunc Vec2::operator Int2() const {
+  return {s32(x), s32(y)};
+}
 
 mMathInlineFunc Vec2 operator-(const Vec2& a) {
   return {-a.x, -a.y};
