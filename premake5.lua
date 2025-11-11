@@ -9,7 +9,6 @@ include "cc"
 
 project "cc-tests"
   kind "ConsoleApp"
-  buildoptions { warnings_flags }
   language "C++"
   link_cc()
   files { "cc-tests/**.hpp", "cc-tests/**.cpp" }
