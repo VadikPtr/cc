@@ -22,13 +22,17 @@ warnings_flags = {
 root_dir = os.getcwd()
 
 workspace "cc"
+  toolset "clang"
   location "build"
-  buildoptions { "-fdiagnostics-color=always", "-arch arm64" }
+  buildoptions { "-fdiagnostics-color=always" }
   configurations { "Debug", "Release" }
   cppdialect "C++20"
   cdialect "C11"
   targetdir "bin/%{cfg.buildcfg}"
-  linkoptions { "-rpath @executable_path" }
+  if os.istarget("macosx") then
+    buildoptions { "-arch arm64" }
+    linkoptions { "-rpath @executable_path" }
+  end
 
   filter "configurations:Debug"
     defines { "DEBUG" }

@@ -681,7 +681,7 @@ mMathInlineFunc Quat cross(const Quat& a, const Quat& b) {
 }
 
 mMathInlineFunc bool feq(f32 a, f32 b, f32 eps) {
-  return fabs(a - b) < eps;
+  return std::abs(a - b) < eps;
 }
 mMathInlineFunc bool feq(Vec2 a, Vec2 b, f32 eps) {
   return feq(a.x, b.x, eps) and feq(a.y, b.y, eps);

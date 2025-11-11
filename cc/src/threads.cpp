@@ -8,7 +8,9 @@
   #include <pthread.h>
   #include <unistd.h>
   #include <sys/types.h>
-  #include <sys/sysctl.h>
+  #ifdef __APPLE__
+    #include <sys/sysctl.h>
+  #endif
 #endif
 
 #ifdef __clang__
@@ -113,10 +115,16 @@ void thread_sleep(u32 ms) {
 }
 
 size_t platform_hardware_thread_count() {
+  #ifdef __APPLE__
   int    num_threads = 2;
   size_t size        = sizeof(num_threads);
   ::sysctlbyname("hw.logicalcpu", &num_threads, &size, nullptr, 0);
   return num_threads <= 2 ? 2 : size_t(num_threads);
+  #else
+  cpu_set_t cpuset;
+  sched_getaffinity(0, sizeof(cpuset), &cpuset);
+  return size_t(CPU_COUNT(&cpuset));
+  #endif
 }
 
 #endif

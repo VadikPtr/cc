@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#ifdef __GNUC__
+  #include <sys/wait.h>
+#endif
 
 namespace {
   class FD {
