@@ -1,48 +1,9 @@
 ---@diagnostic disable: undefined-field, undefined-global, lowercase-global
 
-warnings_flags = {
-  "-Werror",
-  "-Wall",
-  "-Wextra",
-  "-Wshadow",
-  "-Wnon-virtual-dtor",
-  "-Wcast-align",
-  "-Wunused",
-  "-Woverloaded-virtual",
-  "-Wpedantic",
-  "-Wconversion",
-  "-Wsign-conversion",
-  "-Wnull-dereference",
-  "-Wdouble-promotion",
-  "-Wformat=2",
-  "-Wno-strict-prototypes",
-  "-Wno-missing-designated-field-initializers",
-}
-
 root_dir = os.getcwd()
 
-workspace "cc"
-  toolset "clang"
-  location "build"
-  buildoptions { "-fdiagnostics-color=always" }
-  configurations { "Debug", "Release" }
-  cppdialect "C++20"
-  cdialect "C11"
-  targetdir "bin/%{cfg.buildcfg}"
-  if os.istarget("macosx") then
-    buildoptions { "-arch arm64" }
-    linkoptions { "-rpath @executable_path" }
-  end
-
-  filter "configurations:Debug"
-    defines { "DEBUG" }
-    symbols "On"
-    optimize "Off"
-
-  filter "configurations:Release"
-    defines { "NDEBUG" }
-    optimize "Full"
-    linkoptions { "-flto" }
+depo_workspace("cc")
+depo_warnings()
 
 include "cc"
 
