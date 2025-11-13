@@ -129,6 +129,9 @@ concept Hashable = requires(T t) {
   { t.hash() };
 };
 
+template <class T>
+concept PointerType = std::is_pointer_v<T>;
+
 enum class ComparePos {
   Less,
   Equals,

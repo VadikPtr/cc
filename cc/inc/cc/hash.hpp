@@ -18,4 +18,9 @@ namespace cc {
   u64 hash(const T& key) {
     return key.hash();
   }
+
+  template <PointerType T>
+  u64 hash(const T& key) {
+    return hash(u64(key));
+  }
 }  // namespace cc
