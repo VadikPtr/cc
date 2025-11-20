@@ -33,6 +33,7 @@ class Time {
   Time& operator+=(const Time& rhs);
   bool  operator<(const Time& rhs) const;
   bool  operator>(const Time& rhs) const;
+  f32   operator/(const Time& rhs) const;
 
   Time abs_diff(const Time& other) const;
 };

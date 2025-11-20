@@ -22,3 +22,5 @@
 #include "cc/threads.hpp"
 #include "cc/prog-opts.hpp"
 #include "cc/time.hpp"
+#include "cc/ifsm.hpp"
+#include "cc/fsm.hpp"

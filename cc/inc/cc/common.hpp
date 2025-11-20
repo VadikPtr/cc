@@ -28,7 +28,8 @@
 #define mMin(a, b) ((a) < (b) ? (a) : (b))
 #define mClamp(x, a, b) ((x) < (a) ? (a) : ((x) > (b) ? (b) : (x)))
 
-#ifdef DEBUG
+#if defined(DEBUG)
+// #if 0
   #define mDebugTrap() __builtin_debugtrap()
   #define mDebugSwitch(debug, ndebug) debug
 #else

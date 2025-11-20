@@ -168,6 +168,10 @@ bool Time::operator<(const Time& rhs) const {
 bool Time::operator>(const Time& rhs) const {
   return value_ > rhs.value_;
 }
+f32 Time::operator/(const Time& rhs) const {
+  assert(rhs.has_value());
+  return (f32)value_ / rhs.value_;
+}
 Time Time::abs_diff(const Time& other) const {
   if (value_ > other.value_) {
     return Time{value_ - other.value_};
