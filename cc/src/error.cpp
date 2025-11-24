@@ -1,13 +1,17 @@
 #include "cc/error.hpp"
 #include "cc/log.hpp"
-#include <execinfo.h>
-#include <dlfcn.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <signal.h>
-#ifdef __GNUC__
-  #include <sys/wait.h>
+#ifndef _WIN32
+  #include <execinfo.h>
+  #include <dlfcn.h>
+  #include <unistd.h>
+  #include <fcntl.h>
+  #include <signal.h>
+  #ifdef __GNUC__
+    #include <sys/wait.h>
+  #endif
 #endif
+
+#ifndef _WIN32
 
 namespace {
   class FD {
@@ -156,3 +160,8 @@ StackTrace::StackTrace() {
   free(symbols);
   formatted_ = sb.to_string();
 }
+#else
+StackTrace::StackTrace() {
+  formatted_ = "Not implemented";
+}
+#endif

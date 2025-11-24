@@ -341,7 +341,7 @@ size_t Path::file_size() const {
 #endif
 }
 
-static bool platform_mkdir(const char* path, FsDirMode mode) {
+static bool platform_mkdir(const char* path, [[maybe_unused]] FsDirMode mode) {
 #ifdef _WIN32
   return _mkdir(path) == 0;
 #else
