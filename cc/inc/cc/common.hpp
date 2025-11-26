@@ -9,6 +9,12 @@
 #include <cmath>
 #include <climits>
 
+#ifdef _WIN32
+  #define mPathSize 512
+#else
+  #define mPathSize PATH_MAX
+#endif
+
 #define mStringify(x) #x
 #define mToString(x) mStringify(x)
 #define mFileLine __FILE__ ":" mToString(__LINE__)

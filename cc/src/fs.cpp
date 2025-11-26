@@ -18,8 +18,8 @@
 
 namespace {
   struct OsPath {
-    char   cstr[512] = {};
-    size_t len       = 0;
+    char   cstr[mPathSize] = {};
+    size_t len             = 0;
 
     OsPath() = default;
 
