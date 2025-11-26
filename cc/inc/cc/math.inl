@@ -61,7 +61,7 @@ mMathInlineFunc Vec2 operator*(f32 a, const Vec2& b) {
 mMathInlineFunc Vec2 operator/(f32 a, const Vec2& b) {
   return Vec2(a) / b;
 }
-f32 dot(const Vec2& a, const Vec2& b) {
+mMathInlineFunc f32 dot(const Vec2& a, const Vec2& b) {
   return a.x * b.x + a.y * b.y;
 }
 

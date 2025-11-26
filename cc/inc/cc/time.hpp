@@ -49,6 +49,7 @@ class TimeDelta {
   f32  delta_secs_ = 0;
 
  public:
+  explicit TimeDelta(Time begin);
   TimeDelta();
   void on_loop_end();
 

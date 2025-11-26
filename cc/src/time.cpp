@@ -39,6 +39,9 @@ namespace {
     u64 now() const {
       LARGE_INTEGER qpc = {};
       QueryPerformanceCounter(&qpc);
+      if (freq.QuadPart == 0) {
+        return 0;
+      }
       // return (u64)int64_muldiv(qpc.QuadPart - start.QuadPart, 1'000'000'000,
       //                          freq.QuadPart);
       decltype(LARGE_INTEGER::QuadPart) elapsed{};
@@ -203,14 +206,15 @@ mFmtImpl(Time) {
   out.append("s");
 }
 
-TimeDelta::TimeDelta() {
-  begin_      = Time::now();
+TimeDelta::TimeDelta(Time begin) : begin_(begin) {
   delta_time_ = Time::make_ms(16.66666667);
   delta_ms_   = f32(delta_time_.ms());
   delta_us_   = f32(delta_time_.us());
   delta_secs_ = f32(delta_time_.secs());
   delta_ms_u_ = u32(delta_ms_);
 }
+
+TimeDelta::TimeDelta() : TimeDelta{Time::now()} {}
 
 void TimeDelta::on_loop_end() {
   Time now    = Time::now();
