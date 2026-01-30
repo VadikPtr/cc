@@ -51,6 +51,8 @@ class StrView {
   StrView          trim_left() const;
   StrView          trim_right() const;
   StrView          trim() const;
+  StrView          to_lower();
+  StrView          to_upper();
   bool             try_to_c_str(char* buf, size_t buffer_size) const;
   void             to_c_str(char* buf, size_t buffer_size) const;
 

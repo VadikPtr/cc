@@ -438,3 +438,8 @@ mTestCase(str_starts_ends) {
   mRequire(!StrView("").ends_with("abcd"));
   mRequire(!StrView("").starts_with("abcd"));
 }
+
+mTestCase(str_to_lower_to_upper) {
+  mRequireEqStr(Str("aBcDe").to_lower(), "abcde");
+  mRequireEqStr(Str("aBcDe").to_upper(), "ABCDE");
+}

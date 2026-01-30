@@ -333,6 +333,20 @@ StrView StrView::trim() const {
   return trim_left().trim_right();
 }
 
+StrView StrView::to_lower() {
+  for (size_t i = 0; i < size_; i++) {
+    data_[i] = tolower(data_[i]);
+  }
+  return *this;
+}
+
+StrView StrView::to_upper() {
+  for (size_t i = 0; i < size_; i++) {
+    data_[i] = toupper(data_[i]);
+  }
+  return *this;
+}
+
 bool StrView::try_to_c_str(char* buf, size_t buffer_size) const {
   if (buffer_size == 0 || buf == nullptr || size_ > buffer_size - 1) {
     return false;
