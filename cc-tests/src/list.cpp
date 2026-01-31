@@ -244,6 +244,7 @@ mTestCase(list_remove_next) {
   mRequire(l.remove(it) == 2);
   ++it;
   mRequire(*it == 3);
+  mRequire(l.size() == 2);
 }
 
 

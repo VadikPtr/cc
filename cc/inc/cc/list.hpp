@@ -144,6 +144,7 @@ class List {
     } else {
       back_ = node->prev;  // it is back
     }
+    --size_;
     T value(move(node->value));
     delete node;
     return value;
