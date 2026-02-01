@@ -50,7 +50,12 @@ void ProgOpts::add_argument(const char* long_name, char short_name,
 #if defined(DEBUG)
   for (size_t i = 0; i < g_opts_count; i++) {
     assert(strcmp(long_name, g_opts[i].name) != 0);
-    assert(short_name != g_opts[i].name_short);
+    if (short_name == g_opts[i].name_short) {
+      printf("Error: option already defined: %c (%s vs %s)\n", short_name, long_name,
+             g_opts[i].name);
+      fflush(stdout);
+      abort();
+    }
   }
 #endif
 
