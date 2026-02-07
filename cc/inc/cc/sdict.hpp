@@ -87,6 +87,16 @@ class SDict {
     return nullptr;
   }
 
+  template <typename T>
+  const TValue* find_non_sorted(const T& key) const {
+    for (size_t i = 0; i < size_; i++) {
+      if (keys_[i] == key) {
+        return &values_[i];
+      }
+    }
+    return nullptr;
+  }
+
   struct IterView {
     const TKey& key;
     TValue&     value;
