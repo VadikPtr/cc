@@ -30,10 +30,10 @@ class StrBuilder {
   StrView view() const;
   void    remove_last();
   void    reset();
+  void    ensure_capacity(size_t capacity);
 
  private:
   void init();
-  void ensure_capacity(size_t capacity);
 };
 
 
