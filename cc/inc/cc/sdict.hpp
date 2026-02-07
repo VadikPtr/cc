@@ -12,7 +12,7 @@ class SDict {
   using Key   = TKey;
   using Value = TValue;
 
-  void resize(size_t size) {
+  void reserve(size_t size) {
     keys_.resize(size);
     values_.resize(size);
   }
@@ -72,6 +72,16 @@ class SDict {
         low = mid + 1;
       } else {
         high = mid - 1;
+      }
+    }
+    return nullptr;
+  }
+
+  template <typename T>
+  TValue* find_non_sorted(const T& key) {
+    for (size_t i = 0; i < size_; i++) {
+      if (keys_[i] == key) {
+        return &values_[i];
       }
     }
     return nullptr;

@@ -3,7 +3,7 @@
 
 mTestCase(sdict) {
   SDict<u64, StrView> dict;
-  dict.resize(3);
+  dict.reserve(3);
 
   dict.sort();
   mRequire(dict.find(1) == nullptr);
@@ -32,6 +32,11 @@ mTestCase(sdict) {
   mRequire(dict.find(3) != nullptr);
   mRequireEqStr(dict[3], "6");
   mRequire(dict.find(4) == nullptr);
+
+  mRequireEqStr(*dict.find_non_sorted(1), "2");
+  mRequireEqStr(*dict.find_non_sorted(2), "4");
+  mRequireEqStr(*dict.find_non_sorted(3), "6");
+  mRequire(dict.find_non_sorted(4) == nullptr);
 
   size_t iter = 0;
   for (const auto& [key, value] : dict) {
