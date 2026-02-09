@@ -1,6 +1,7 @@
 #pragma once
 #include "cc/common.hpp"
 #include "cc/arr-view.hpp"
+#include "cc/hash.hpp"
 
 class StrView {
  protected:
@@ -88,6 +89,7 @@ class StrHash {
  public:
   StrHash() = default;
   StrHash(StrView str);
+  explicit constexpr StrHash(u64 hash) : hash_(hash) {}
 
   u64 hash() const { return hash_; }
 
@@ -96,6 +98,6 @@ class StrHash {
   bool operator<(const StrHash& o) const { return hash_ < o.hash_; }
 };
 
-inline StrHash operator""_sh(const char* cstr, size_t size) {
-  return StrHash(StrView(cstr, size));
+inline constexpr StrHash operator""_sh(const char* cstr, size_t size) {
+  return StrHash(cc::hash_fnv64(cstr, size));
 }

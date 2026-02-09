@@ -7,7 +7,16 @@ namespace cc {
   u64 hash_wy(const void* key, size_t len);
   u32 hash_crc32(const void* data, size_t len);
   u32 hash_fnv32(const void* data, size_t len);
-  u64 hash_fnv64(const void* data, size_t len);
+
+  constexpr u64 hash_fnv64(const void* data, size_t len) {
+    auto bp   = (unsigned char*)data;
+    u64  hval = 0xcbf29ce484222325ULL;
+    for (size_t i = 0; i < len; ++i) {
+      hval *= 0x100000001b3ULL;
+      hval ^= (u64)bp[i];
+    }
+    return hval;
+  }
 
   // --- hash
 

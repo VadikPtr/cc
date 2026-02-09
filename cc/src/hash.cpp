@@ -191,16 +191,6 @@ u32 cc::hash_fnv32(const void* data, size_t len) {
   return hval;
 }
 
-u64 cc::hash_fnv64(const void* data, size_t len) {
-  auto bp   = (unsigned char*)data;
-  u64  hval = 0xcbf29ce484222325ULL;
-  for (size_t i = 0; i < len; ++i) {
-    hval *= 0x100000001b3ULL;
-    hval ^= (u64)bp[i];
-  }
-  return hval;
-}
-
 template <>
 u64 cc::hash<u64>(const u64& key) {
   u64 tmp = key;
