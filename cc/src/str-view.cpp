@@ -183,10 +183,9 @@ size_t StrView::find_last(StrView term) const {
 }
 
 StrView StrView::sub(size_t from, size_t count) const {
-  if (empty() || !count) {
+  if (empty() || !count || from > size_) {
     return {};
   }
-  assert(size_ >= from);
   size_t max_count = size_ - from;
   if (count > max_count) {
     count = max_count;
