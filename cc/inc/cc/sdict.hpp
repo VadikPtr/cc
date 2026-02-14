@@ -16,6 +16,7 @@ class SDict {
     keys_.resize(size);
     values_.resize(size);
   }
+  void resize(size_t size) { reserve(size); }
 
   // expects key to be unique, does no checks for it
   void insert(TKey key, TValue value) {
