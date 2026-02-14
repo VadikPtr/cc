@@ -43,7 +43,7 @@ class SArr {
   T*         data() { return storage_.data(); }
   const T*   data() const { return storage_.data(); }
   T*         begin() { return storage_.data(); }
-  const T*   begin() const { return storage_; }
+  const T*   begin() const { return storage_.data(); }
   T*         end() { return storage_.data() + size_; }
   const T*   end() const { return storage_.data() + size_; }
   T&         operator[](size_t index) { return storage_[index]; }
