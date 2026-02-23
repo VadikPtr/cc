@@ -54,7 +54,8 @@ class Path {
   size_t  get_components(ArrView<StrView> out) const;
   StrView name() const;
   StrView name_without_ext() const;
-  StrView ext() const;                      // includes .
+  StrView ext() const;                      // "bootstrap.min.css" -> ".min.css"
+  StrView ext_last() const;                 // "bootstrap.min.css" -> ".css"
   Path    with_ext(StrView new_ext) const;  // replaces extension
   Path    relative_to(const Path& base) const;
   Path    absolute() const;
@@ -88,8 +89,8 @@ class Path {
   static Path to_cwd();
 
   explicit operator Str() const { return data_; }
-  operator StrView() const { return data_; }
-  operator bool() const { return !data_.empty(); }
+           operator StrView() const { return data_; }
+           operator bool() const { return !data_.empty(); }
 
   bool operator==(StrView other) const { return data_ == other; }
   bool operator!=(StrView other) const { return data_ != other; }

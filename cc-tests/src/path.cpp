@@ -1,5 +1,4 @@
 #include "cc/test.hpp"
-#include "cc/common.hpp"
 #include "cc/fs.hpp"
 
 mTestCase(path_parent) {
@@ -33,6 +32,7 @@ mTestCase(path_parent) {
   mRequireEqStr(Path("a///test.txt").name_without_ext(), "test");
   mRequireEqStr(Path("a///test").name_without_ext(), "test");
   mRequireEqStr(Path("a///test.txt.ext").ext(), ".txt.ext");
+  mRequireEqStr(Path("test.txt.ext").ext_last(), ".ext");
   mRequireEqStr(Path("test.txt.ext").ext(), ".txt.ext");
   mRequireEqStr(Path("test").ext(), "test");
   mRequire(Path("test") == StrView("test"));

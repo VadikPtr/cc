@@ -198,6 +198,15 @@ StrView Path::ext() const {
   return n.sub(idx);
 }
 
+StrView Path::ext_last() const {
+  auto   n   = name();
+  size_t idx = n.find_last('.');
+  if (idx == UINT64_MAX) {
+    return n;
+  }
+  return n.sub(idx);
+}
+
 Path Path::with_ext(StrView new_ext) const {
   size_t slash = data_.find_last('/');
   if (slash == UINT64_MAX) {
