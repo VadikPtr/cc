@@ -1,4 +1,5 @@
 #include "cc/fs.hpp"
+#include <cstdio>
 #include "cc/fmt.hpp"
 #include "cc/error.hpp"
 
@@ -756,4 +757,14 @@ bool File::try_write_bytes(ArrView<u8> data) const {
   }
   fflush(file_);
   return true;
+}
+
+void File::seek(s64 offset) const {
+  if (!try_seek(offset)) {
+    throw Err(Str("Cannot seek"));
+  }
+}
+
+bool File::try_seek(s64 offset) const {
+  return fseek(file_, offset, SEEK_SET) == 0;
 }

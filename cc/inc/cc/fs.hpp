@@ -130,4 +130,6 @@ class File {
   bool try_read_bytes(ArrView<u8> out) const;
   void write_bytes(ArrView<u8> data) const;
   bool try_write_bytes(ArrView<u8> data) const;
+  void seek(s64 offset) const;
+  bool try_seek(s64 offset) const;
 };
