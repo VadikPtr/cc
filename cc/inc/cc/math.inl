@@ -736,6 +736,24 @@ mMathInlineFunc Vec4 lerp(const Vec4& a, const Vec4& b, f32 t) {
   return a * (1.0f - t) + b * t;
 }
 
+template <typename T>
+mMathInlineFunc T exp_decay(T a, T b, f32 decay, f32 dt_secs) {
+  return b + (a - b) * exp(-decay * dt_secs);
+}
+
+mMathInlineFunc f32 exp_decay(f32 a, f32 b, f32 decay, f32 dt_secs) {
+  return exp_decay<f32>(a, b, decay, dt_secs);
+}
+mMathInlineFunc Vec2 exp_decay(Vec2 a, Vec2 b, f32 decay, f32 dt_secs) {
+  return exp_decay<Vec2>(a, b, decay, dt_secs);
+}
+mMathInlineFunc Vec3 exp_decay(Vec3 a, Vec3 b, f32 decay, f32 dt_secs) {
+  return exp_decay<Vec3>(a, b, decay, dt_secs);
+}
+mMathInlineFunc Vec4 exp_decay(Vec4 a, Vec4 b, f32 decay, f32 dt_secs) {
+  return exp_decay<Vec4>(a, b, decay, dt_secs);
+}
+
 mMathInlineFunc mFmtImpl(Float2) {
   using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
   using Type = decltype(v.x);

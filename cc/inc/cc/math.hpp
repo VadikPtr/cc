@@ -315,6 +315,18 @@ Vec2 lerp(const Vec2& a, const Vec2& b, f32 t);
 Vec3 lerp(const Vec3& a, const Vec3& b, f32 t);
 Vec4 lerp(const Vec4& a, const Vec4& b, f32 t);
 
+// Acts like a=lerp(a,b,0.05) - go 5% forward, but framerate independent.
+// Delta time in seconds.
+// Decay range: 1..25, from slow to fast.
+// Example parameter converge in:
+//   decay=4 - 1 second
+//   decay=8 - 0.5 second
+//   decay=16 - 0.25 second
+f32  exp_decay(f32 a, f32 b, f32 decay, f32 dt_secs);
+Vec2 exp_decay(Vec2 a, Vec2 b, f32 decay, f32 dt_secs);
+Vec3 exp_decay(Vec3 a, Vec3 b, f32 decay, f32 dt_secs);
+Vec4 exp_decay(Vec4 a, Vec4 b, f32 decay, f32 dt_secs);
+
 struct CameraMath {
   Vec3 position     = {0, 0, 0};
   Vec3 direction    = {0, 0, 1};  // on 1 meter circle
