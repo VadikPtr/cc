@@ -17,8 +17,6 @@ This project is using https://github.com/VadikPtr/depo build system.
 - minor improvements
    - copy(ArrView, ArrView) will not check if ranges intersects, this could cause problems
    - str replace method
-- optimizations
-   - sort function should be insertion sort
 
 ## CC Licenses
 

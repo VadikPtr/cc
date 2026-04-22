@@ -2,23 +2,19 @@
 #include "cc/common.hpp"
 #include "cc/arr-view.hpp"
 
-// TODO: this is bubble sort, not very cache friendly, need insertion sort
 template <typename T, typename TFunc>
 void sort(ArrView<T> arr, TFunc&& compare_func) {
-  if (arr.empty() || arr.size() == 1) {
+  if (arr.size() <= 1) {
     return;
   }
-  for (size_t i = 0; i < arr.size(); ++i) {
-    bool swapped = false;
-    for (size_t j = 0; j < arr.size() - i - 1; ++j) {
-      if (compare_func(arr[j + 1], arr[j])) {
-        swapped = true;
-        swap(arr[j], arr[j + 1]);
-      }
+  for (size_t i = 1; i < arr.size(); ++i) {
+    T      key = arr[i];
+    size_t j   = i;
+    while (j > 0 && compare_func(key, arr[j - 1])) {
+      arr[j] = arr[j - 1];
+      --j;
     }
-    if (!swapped) {  // array is sorted
-      return;
-    }
+    arr[j] = key;
   }
 }
 
