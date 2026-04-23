@@ -327,3 +327,7 @@ mTestCase(parse_array_string) {
   mRequireEqStr(values[0], "val1");
   mRequireEqStr(values[1], "val2");
 }
+
+mTestCase(fmt_sh_test) {
+  mRequire(fmt_sh("test", 1) == "test1"_sh);
+}

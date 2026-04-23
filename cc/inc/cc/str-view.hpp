@@ -98,6 +98,12 @@ class StrHash {
   bool operator<(const StrHash& o) const { return hash_ < o.hash_; }
 };
 
+#ifdef _DEBUG
+inline StrHash operator""_sh(const char* cstr, size_t size) {
+  return StrHash(StrView(cstr, size));
+}
+#else
 inline constexpr StrHash operator""_sh(const char* cstr, size_t size) {
   return StrHash(cc::hash_fnv64(cstr, size));
 }
+#endif

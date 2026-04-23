@@ -96,6 +96,13 @@ Str fmt(const Args&... args) {
   return result.to_string();
 }
 
+template <typename... Args>
+StrHash fmt_sh(const Args&... args) {
+  StrBuilder result;
+  (Fmt<Args>::format(args, result), ...);
+  return StrHash(result.view());
+}
+
 template <typename T>
 struct StrParser {
   static bool try_parse(StrView, T&) { static_assert(false); }
