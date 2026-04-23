@@ -44,13 +44,16 @@ namespace {
 void ProgOpts::add_argument(const char* long_name, char short_name,
                             const char* help_argument, const char* help_value, void* arg,
                             ArgumentType type, Flags flags) {
+#if defined(DEBUG)
   assert(!g_parsed);
   assert(g_opts_count + 1 < g_max_opts);
-
-#if defined(DEBUG)
   for (size_t i = 0; i < g_opts_count; i++) {
-    assert(strcmp(long_name, g_opts[i].name) != 0);
-    if (short_name == g_opts[i].name_short) {
+    if (strcmp(long_name, g_opts[i].name) == 0) {
+      printf("Error: option already defined: %s\n", long_name);
+      fflush(stdout);
+      abort();
+    }
+    if (short_name != '\0' and short_name == g_opts[i].name_short) {
       printf("Error: option already defined: %c (%s vs %s)\n", short_name, long_name,
              g_opts[i].name);
       fflush(stdout);
@@ -87,13 +90,20 @@ void ProgOpts::add_argument(const char* long_name, char short_name,
 }
 
 void ProgOpts::add(const Flag& arg) {
+#if defined(DEBUG)
   assert(!g_parsed);
   assert(g_opts_count + 1 < g_max_opts);
-
-#if defined(DEBUG)
   for (size_t i = 0; i < g_opts_count; i++) {
-    assert(strcmp(arg.long_name, g_opts[i].name) != 0);
-    assert(arg.short_name != g_opts[i].name_short);
+    if (strcmp(arg.long_name, g_opts[i].name) == 0) {
+      printf("Error: option already defined: %s\n", arg.long_name);
+      fflush(stdout);
+      abort();
+    }
+    if (arg.short_name != '\0' and arg.short_name == g_opts[i].name_short) {
+      printf("Error: option already defined: %c\n", arg.short_name);
+      fflush(stdout);
+      abort();
+    }
   }
 #endif
 
