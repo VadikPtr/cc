@@ -192,7 +192,7 @@ struct StrParser<Arr<T>> {
       return false;
     }
     out.resize(arr_size);
-    return StrParser<ArrView<T>>::try_parse(str.sub(size_end + 2), out);
+    return StrParser<ArrView<T>>::try_parse(str.sub(size_end + 1), out);
   }
 };
 

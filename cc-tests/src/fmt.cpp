@@ -305,6 +305,19 @@ mTestCase(parse_array_int) {
   mRequire(StrParser<ArrView<int>>::try_parse("[3]", out_1));
   mRequire(v[0] == 3);
   mRequire(!StrParser<ArrView<int>>::try_parse("[3, 4]", out_1));
+
+  Arr<int> arr;
+  mRequire(StrParser<Arr<int>>::try_parse("(1)[3]", arr));
+  mRequire(arr.size() == 1);
+  mRequire(arr[0] == 3);
+
+  mRequire(StrParser<Arr<int>>::try_parse("(0)[]", arr));
+  mRequire(arr.size() == 0);
+
+  mRequire(StrParser<Arr<int>>::try_parse("(2)[3, 4]", arr));
+  mRequire(arr.size() == 2);
+  mRequire(arr[0] == 3);
+  mRequire(arr[1] == 4);
 }
 
 mTestCase(parse_array_string) {
