@@ -122,8 +122,9 @@ class Inih {
   InihIter           begin() const { return InihIter(sections_); }
   std::nullptr_t     end() const { return nullptr; }
   const InihSection& global() const;
-  const InihSection& section(StrHash name) const;
-  const InihSection& operator[](StrHash name) const { return section(name); }
+  size_t             section_count() const;
+  InihKV             operator[](size_t index) const;
+  const InihSection& operator[](StrHash name) const;
 
  private:
   void parse_properties(StrView section_content, InihSection& section);

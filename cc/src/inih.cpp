@@ -110,7 +110,7 @@ void Inih::parse(Str data) {
       break;
     }
     StrView header = content.sub(start + 1, end - start - 1);
-    content = content.sub(end + 1);  // not content does not include section header
+    content        = content.sub(end + 1);  // not content does not include section header
     size_t  next_header     = content.find("\n[");
     StrView section_content = content.sub(0, next_header);
     if (next_header == StrView::npos) {
@@ -136,12 +136,21 @@ const InihSection& Inih::global() const {
   return global_section_;
 }
 
-const InihSection& Inih::section(StrHash name) const {
+const InihSection& Inih::operator[](StrHash name) const {
   const InihSection* value = sections_.find(InihKey{.hash = name});
   if (value == nullptr) {
     throw Err("No section found");
   }
   return *value;
+}
+
+size_t Inih::section_count() const {
+  return sections_.size();
+}
+
+InihKV Inih::operator[](size_t index) const {
+  auto v = sections_.at(index);
+  return InihKV{.key = v.key.str, .value = v.value};
 }
 
 void Inih::parse_properties(StrView section_content, InihSection& section) {
