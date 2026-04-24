@@ -43,6 +43,7 @@ class InihSection {
   explicit InihSection(size_t initial_capacity);
 
   StrView value(StrHash key) const;
+  StrView operator[](StrHash name) const { return value(name); }
 
   template <typename T>
   T parse(StrHash key) const {
@@ -122,6 +123,7 @@ class Inih {
   std::nullptr_t     end() const { return nullptr; }
   const InihSection& global() const;
   const InihSection& section(StrHash name) const;
+  const InihSection& operator[](StrHash name) const { return section(name); }
 
  private:
   void parse_properties(StrView section_content, InihSection& section);

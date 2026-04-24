@@ -34,12 +34,12 @@ last = check
   mRequireEqStr(ini.global().value("global"_sh), "test"_sv);
   mRequireEqStr(ini.section("Section"_sh).value("a"_sh), "1"_sv);
 
-  mRequire(ini.section("Section"_sh).parse<u64>("b"_sh) == u64(2));
-  mRequire(ini.section("Section"_sh).parse_or<u64>("b"_sh, 4) == u64(2));
-  mRequireEqStr(ini.section("Section"_sh).parse<Str>("c"_sh), "3"_sv);
-  mRequireEqStr(ini.section("Section"_sh).parse<StrView>("d"_sh), "4"_sv);
-  mRequireEqStr(ini.section("Section"_sh).value("wrold"_sh), "test"_sv);
-  mRequireEqStr(ini.section("Section"_sh).value("last"_sh), "check"_sv);
+  mRequire(ini["Section"_sh].parse<u64>("b"_sh) == u64(2));
+  mRequire(ini["Section"_sh].parse_or<u64>("b"_sh, 4) == u64(2));
+  mRequireEqStr(ini["Section"_sh].parse<Str>("c"_sh), "3"_sv);
+  mRequireEqStr(ini["Section"_sh].parse<StrView>("d"_sh), "4"_sv);
+  mRequireEqStr(ini["Section"_sh]["wrold"_sh], "test"_sv);
+  mRequireEqStr(ini["Section"_sh]["last"_sh], "check"_sv);
 
   mRequireEqStr(ini.section("Section1"_sh).value("a"_sh), "b"_sv);
 
