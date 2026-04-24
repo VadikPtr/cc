@@ -15,9 +15,9 @@ class Err : public std::exception {
   // StackTrace trace_;
 
  public:
-  Err() : Err(Str("Unknown error")) {}
-  explicit Err(Str what) : what_(move(what)) {}
-  explicit Err(StrView what) : what_(what) {}
+  Err();
+  explicit Err(Str what);
+  explicit Err(StrView what);
   ~Err() override = default;
 
   StrView message() const { return what_; }

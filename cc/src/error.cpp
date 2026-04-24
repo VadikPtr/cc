@@ -165,3 +165,21 @@ StackTrace::StackTrace() {
   formatted_ = "Not implemented";
 }
 #endif
+
+Err::Err() : Err(Str("Unknown error")) {
+#ifdef _DEBUG
+  mLogDebug("Error thrown: ", what_);
+#endif
+}
+
+Err::Err(Str what) : what_(move(what)) {
+#ifdef _DEBUG
+  mLogDebug("Error thrown: ", what_);
+#endif
+}
+
+Err::Err(StrView what) : what_(what) {
+#ifdef _DEBUG
+  mLogDebug("Error thrown: ", what_);
+#endif
+}
