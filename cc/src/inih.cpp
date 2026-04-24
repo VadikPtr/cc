@@ -87,15 +87,16 @@ InihIter& InihIter::operator++() {
 //  INIH
 ////////////////////////////////////////////////////////////////////////////////////
 
-void Inih::parse(Str data) {
-  data_ = move(data);
+Inih Inih::parse(Str data) {
+  Inih inih;
+  inih.data_ = move(data);
 
-  sections_.reserve(16);
-  size_t  first_section          = data_.find("\n[");
-  StrView global_section_content = data_.sub(0, first_section);
-  parse_properties(global_section_content, global_section_);
+  inih.sections_.reserve(16);
+  size_t  first_section          = inih.data_.find("\n[");
+  StrView global_section_content = inih.data_.sub(0, first_section);
+  parse_properties(global_section_content, inih.global_section_);
 
-  StrView content = data_.sub(first_section);
+  StrView content = inih.data_.sub(first_section);
 
   while (true) {
     if (content.empty()) {
@@ -126,10 +127,15 @@ void Inih::parse(Str data) {
     }
     InihSection section;
     parse_properties(section_content, section);
-    insert(header, move(section));
+    if (inih.sections_.size() == inih.sections_.capacity()) {
+      inih.sections_.resize(inih.sections_.size() * 2);
+    }
+    InihKey key = InihKey{.hash = StrHash(header), .str = header};
+    inih.sections_.insert(key, move(section));
   }
 
-  sections_.sort();
+  inih.sections_.sort();
+  return inih;
 }
 
 const InihSection& Inih::global() const {
@@ -187,11 +193,4 @@ void Inih::parse_properties(StrView section_content, InihSection& section) {
     section.insert(key, value);
   }
   section.sort();
-}
-
-void Inih::insert(StrView key, InihSection section) {
-  if (sections_.size() == sections_.capacity()) {
-    sections_.resize(sections_.size() * 2);
-  }
-  sections_.insert(InihKey{.hash = StrHash(key), .str = key}, move(section));
 }

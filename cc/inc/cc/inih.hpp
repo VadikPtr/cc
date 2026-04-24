@@ -117,7 +117,7 @@ class Inih {
   Inih(Inih&&) noexcept            = default;
   Inih& operator=(Inih&&) noexcept = default;
 
-  void parse(Str data);
+  static Inih parse(Str data);
 
   InihIter           begin() const { return InihIter(sections_); }
   std::nullptr_t     end() const { return nullptr; }
@@ -127,6 +127,5 @@ class Inih {
   const InihSection& operator[](StrHash name) const;
 
  private:
-  void parse_properties(StrView section_content, InihSection& section);
-  void insert(StrView key, InihSection section);
+  static void parse_properties(StrView section_content, InihSection& section);
 };

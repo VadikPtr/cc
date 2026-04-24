@@ -3,8 +3,7 @@
 #include "cc/inih.hpp"
 
 mTestCase(inih_parse) {
-  Inih ini = Inih();
-  ini.parse(R"(
+  Inih ini = Inih::parse(R"(
 global = test
 
 [Section1]  
