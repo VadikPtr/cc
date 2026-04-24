@@ -51,4 +51,10 @@ last = check
 
   Inih small_ini = Inih::parse("[sec]\nkey=value"_s);
   mRequireEqStr(small_ini["sec"_sh]["key"_sh], "value"_sv);
+
+  Inih space_fter_section = Inih::parse("[sec]  \nkey=value"_s);
+  mRequireEqStr(space_fter_section["sec"_sh]["key"_sh], "value"_sv);
+
+  Inih empty_ini           = Inih::parse("   "_s);
+  Inih empty_multiline_ini = Inih::parse(" \n \n "_s);
 }
