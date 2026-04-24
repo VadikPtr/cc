@@ -117,7 +117,7 @@ class Inih {
   Inih(Inih&&) noexcept            = default;
   Inih& operator=(Inih&&) noexcept = default;
 
-  static Inih parse(Str data);
+  static Inih parse(Str data, u32 expect_global_section_count = 16);
 
   InihIter           begin() const { return InihIter(sections_); }
   std::nullptr_t     end() const { return nullptr; }

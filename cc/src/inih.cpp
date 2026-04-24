@@ -87,7 +87,7 @@ InihIter& InihIter::operator++() {
 //  INIH
 ////////////////////////////////////////////////////////////////////////////////////
 
-Inih Inih::parse(Str data) {
+Inih Inih::parse(Str data, u32 expect_global_section_count) {
   Inih inih;
   inih.data_ = move(data);
 
@@ -95,7 +95,7 @@ Inih Inih::parse(Str data) {
     return inih;
   }
 
-  inih.sections_.reserve(16);
+  inih.sections_.reserve(expect_global_section_count);
   size_t first_section = 0;
 
   if (inih.data_[0] != '[') {
