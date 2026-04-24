@@ -56,3 +56,12 @@ void log_write(LogLevel level, StrBuilder& builder) {
 void log_add_handler(void (*func)(LogLevel, StrView)) {
   g_handlers.push_back(func);
 }
+
+void log_remove_handler(void (*func)(LogLevel, StrView)) {
+  for (auto it = g_handlers.begin(); it != g_handlers.end(); ++it) {
+    if (*it == func) {
+      g_handlers.remove(it);
+      break;
+    }
+  }
+}

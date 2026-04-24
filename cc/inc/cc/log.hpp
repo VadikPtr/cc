@@ -16,6 +16,7 @@ void log_open_file(const Path& path);
 bool log_is_enabled(LogLevel level);
 void log_write(LogLevel level, StrBuilder& builder);
 void log_add_handler(void (*func)(LogLevel, StrView));
+void log_remove_handler(void (*func)(LogLevel, StrView));
 
 #define mLogWrite(level, text_level, ...)                    \
   StrBuilder builder;                                        \
