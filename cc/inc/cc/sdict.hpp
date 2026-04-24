@@ -27,6 +27,7 @@ class SDict {
   }
 
   size_t size() const { return size_; }
+  size_t capacity() const { return keys_.size(); }
 
   void sort() {
     if (size_ <= 1) {
@@ -78,6 +79,29 @@ class SDict {
     return nullptr;
   }
 
+  const TValue* find(const TKey& key) const {
+    if (size_ == 0) {
+      return nullptr;
+    }
+    if (size_ == 1) {
+      return keys_[0] == key ? &values_[0] : nullptr;
+    }
+    s32 low  = 0;
+    s32 high = s32(size_) - 1;
+    while (low <= high) {
+      s32 mid = low + (high - low) / 2;
+      if (keys_[size_t(mid)] == key) {
+        return &values_[size_t(mid)];
+      }
+      if (keys_[size_t(mid)] < key) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    return nullptr;
+  }
+
   template <typename T>
   TValue* find_non_sorted(const T& key) {
     for (size_t i = 0; i < size_; i++) {
@@ -102,6 +126,26 @@ class SDict {
     const TKey& key;
     TValue&     value;
   };
+
+  IterView at(size_t index) {
+    return IterView{
+        .key   = keys_[index],
+        .value = values_[index],
+    };
+  }
+
+  struct CIterView {
+    const TKey&   key;
+    const TValue& value;
+  };
+
+  CIterView at(size_t index) const {
+    return CIterView{
+        .key   = keys_[index],
+        .value = values_[index],
+    };
+  }
+
 
   class Iter {
     SDict* dict_;

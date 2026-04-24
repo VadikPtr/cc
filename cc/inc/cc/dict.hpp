@@ -112,7 +112,13 @@ class Dict final : details::DictV {
       return static_cast<Bucket*>(data_)->value;
     }
 
+    const TValue& value() const {
+      assert(!is_end());
+      return static_cast<const Bucket*>(data_)->value;
+    }
+
     Bucket& operator*() const { return *static_cast<Bucket*>(data_); }
+
     operator bool() const { return !is_end(); }
 
     bool operator==(const Iterator& o) const {
