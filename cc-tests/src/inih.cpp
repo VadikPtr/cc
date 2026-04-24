@@ -47,4 +47,8 @@ last = check
   mRequire(arr[0] == 1);
   mRequire(arr[1] == 2);
   mRequire(arr[2] == 3);
+
+
+  Inih small_ini = Inih::parse("[sec]\nkey=value"_s);
+  mRequireEqStr(small_ini["sec"_sh]["key"_sh], "value"_sv);
 }

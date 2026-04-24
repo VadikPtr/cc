@@ -91,8 +91,17 @@ Inih Inih::parse(Str data) {
   Inih inih;
   inih.data_ = move(data);
 
+  if (inih.data_.empty()) {
+    return inih;
+  }
+
   inih.sections_.reserve(16);
-  size_t  first_section          = inih.data_.find("\n[");
+  size_t first_section = 0;
+
+  if (inih.data_[0] != '[') {
+    first_section = inih.data_.find("\n[");
+  }
+
   StrView global_section_content = inih.data_.sub(0, first_section);
   parse_properties(global_section_content, inih.global_section_);
 
@@ -118,12 +127,6 @@ Inih Inih::parse(Str data) {
       content = StrView();
     } else {
       content = content.sub(next_header + 1);
-    }
-    size_t section_line_count = 1;
-    for (size_t i = 0; i < section_content.size(); i++) {
-      if (section_content[i] == '\n') {
-        ++section_line_count;
-      }
     }
     InihSection section;
     parse_properties(section_content, section);
