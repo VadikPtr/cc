@@ -27,8 +27,8 @@ namespace {
     u64 lo  = t + (rm1 << 32);
     c += lo < t;
     u64 hi = rh + (rm0 >> 32) + (rm1 >> 32) + c;
-    *a          = lo;
-    *b          = hi;
+    *a     = lo;
+    *b     = hi;
 #endif
   }
 
@@ -57,9 +57,9 @@ namespace {
 // wyhash
 u64 cc::hash_wy(const void* key, size_t len) {
   const auto* p    = (const unsigned char*)key;
-  u64    seed = 0xca813bf4c7abf0a9ull;
-  u64    a;
-  u64    b;
+  u64         seed = 0xca813bf4c7abf0a9ull;
+  u64         a;
+  u64         b;
   if (len <= 16) {
     if (len >= 4) {
       a = (vt_wyr4(p) << 32) | vt_wyr4(p + ((len >> 3) << 2));
@@ -181,14 +181,46 @@ u32 cc::hash_crc32(const void* data, size_t len) {
 
 // https://github.com/lcn2/fnv
 
+static constexpr u32 g_fnv32_prime = 0x01000193;
+
 u32 cc::hash_fnv32(const void* data, size_t len) {
   auto bp   = (const char*)data;
   u32  hval = 0x811c9dc5;
   for (size_t i = 0; i < len; ++i) {
     hval ^= (u32)bp[i];
-    hval *= 0x01000193;
+    hval *= g_fnv32_prime;
   }
   return hval;
+}
+
+u32 cc::hash_combine_fnv32(u32 hash1, u32 hash2) {
+  u32 result = hash1;
+  result     = (result ^ hash2) * g_fnv32_prime;
+  return result;
+}
+
+u32 cc::hash_combine_fnv32(u32 hash1, u32 hash2, u32 hash3) {
+  u32 result = hash1;
+  result     = (result ^ hash2) * g_fnv32_prime;
+  result     = (result ^ hash3) * g_fnv32_prime;
+  return result;
+}
+
+u32 cc::hash_combine_fnv32(u32 hash1, u32 hash2, u32 hash3, u32 hash4) {
+  u32 result = hash1;
+  result     = (result ^ hash2) * g_fnv32_prime;
+  result     = (result ^ hash3) * g_fnv32_prime;
+  result     = (result ^ hash4) * g_fnv32_prime;
+  return result;
+}
+
+u32 cc::hash_combine_fnv32(u32 hash1, u32 hash2, u32 hash3, u32 hash4, u32 hash5) {
+  u32 result = hash1;
+  result     = (result ^ hash2) * g_fnv32_prime;
+  result     = (result ^ hash3) * g_fnv32_prime;
+  result     = (result ^ hash4) * g_fnv32_prime;
+  result     = (result ^ hash5) * g_fnv32_prime;
+  return result;
 }
 
 template <>
