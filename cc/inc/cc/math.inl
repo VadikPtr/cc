@@ -778,6 +778,12 @@ mMathInlineFunc mFmtImpl(UInt2) {
   ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
   Fmt<ArrView<Type>>::format(arr, out);
 }
+mMathInlineFunc mFmtImpl(UInt4) {
+  using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
+  using Type = decltype(v.x);
+  ArrView arr{(Type*)&v, sizeof(TVec) / sizeof(Type)};
+  Fmt<ArrView<Type>>::format(arr, out);
+}
 mMathInlineFunc mFmtImpl(Int2) {
   using TVec = std::remove_const_t<std::remove_reference_t<decltype(v)>>;
   using Type = decltype(v.x);

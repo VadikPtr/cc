@@ -27,6 +27,9 @@ struct Float4 {
 struct UInt2 {
   u32 x = 0, y = 0;
 };
+struct UInt4 {
+  u32 x = 0, y = 0, z = 0, w = 0;
+};
 struct Int2 {
   s32 x = 0, y = 0;
 };
@@ -358,6 +361,7 @@ mFmtDeclare(Float2);
 mFmtDeclare(Float3);
 mFmtDeclare(Float4);
 mFmtDeclare(UInt2);
+mFmtDeclare(UInt4);
 mFmtDeclare(Int2);
 mFmtDeclare(USize2);
 mFmtDeclare(ISize2);
