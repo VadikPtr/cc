@@ -69,6 +69,13 @@ struct Fmt<ArrView<T>> {
 };
 
 template <typename T>
+struct Fmt<Arr<T>> {
+  static void format(const Arr<T>& v, StrBuilder& out) {
+    Fmt<ArrView<T>>::format(v, out);
+  }
+};
+
+template <typename T>
 struct Fmt<List<T>> {
   static void format(const List<T>& list, StrBuilder& out) {
     Fmt<StrView>::format("["_sv, out);
