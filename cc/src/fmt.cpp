@@ -296,10 +296,10 @@ mStrParserImpl(unsigned long) {
   return parse_int<unsigned long, ULONG_MAX>(str.data(), str.size(), out);
 }
 mStrParserImpl(bool) {
-  if (str == "true") {
+  if (str == "true" or str == "1") {
     out = true;
     return true;
-  } else if (str == "false") {
+  } else if (str == "false" or str == "0") {
     out = false;
     return true;
   }
