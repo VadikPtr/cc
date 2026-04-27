@@ -281,8 +281,14 @@ struct Quat {
   Mat3 to_mat3() const;
   Mat4 to_mat4() const;
 
-  static Quat from_euler(f32 yaw, f32 pitch, f32 roll);  // in radians
-  static Quat from_euler(Vec3 angles);                   // in radians
+  // order: Z (roll), then X (pitch), then Y (yaw)
+  // values are radians
+  static Quat from_euler(f32 yaw, f32 pitch, f32 roll);
+  // order: Z (roll), then X (pitch), then Y (yaw)
+  // values are radians
+  static Quat from_euler(Vec3 angles);
+  // angle in radians. axis should be normalized.
+  static Quat from_axis_angle(const Vec3& axis, f32 angle);
 };
 
 Quat operator-(const Quat& a);

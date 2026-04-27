@@ -648,6 +648,13 @@ mMathInlineFunc Quat Quat::from_euler(Vec3 angles) {
   return from_euler(angles.x, angles.y, angles.z);
 }
 
+mMathInlineFunc Quat from_axis_angle(const Vec3& axis, f32 angle) {
+  f32 half_angle = angle * 0.5f;
+  f32 s          = sinf(half_angle);
+  f32 c          = cosf(half_angle);
+  return Quat(axis.x * s, axis.y * s, axis.z * s, c);
+}
+
 mMathInlineFunc Quat operator-(const Quat& a) {
   return {-a.x, -a.y, -a.z, -a.w};
 }
