@@ -292,6 +292,8 @@ struct Quat {
   static Quat from_euler(Vec3 angles);
   // angle in radians. axis should be normalized.
   static Quat from_axis_angle(const Vec3& axis, f32 angle);
+  static Quat from_rotation_mat(const Mat3& mat);     // extract rotation
+  static Quat from_rotation_mat(const Mat4& mat);     // extract rotation
 };
 
 Quat operator-(const Quat& a);
@@ -303,6 +305,14 @@ Quat operator*(f32 a, const Quat& b);
 Quat operator/(const Quat& a, f32 b);
 f32  dot(const Quat& a, const Quat& b);
 Quat cross(const Quat& a, const Quat& b);
+
+
+struct DualQuat {
+  Quat real;
+  Quat dual;
+
+  static DualQuat from_mat(const Mat4& mat);
+};
 
 
 bool feq(f32 a, f32 b, f32 eps = g_eps);
