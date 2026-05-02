@@ -24,3 +24,14 @@ mTestCase(exp_decay_test) {
   converge_exp_check(8);
   converge_exp_check(16);
 }
+
+mTestCase(quat_test) {
+  // Identity rotation
+  Quat q1 = Quat(0, 0, 0, 1);
+  // 90-degree rotation around Y
+  Quat q2     = Quat(0, sin(g_pi / 4), 0, cos(g_pi / 4));
+  Quat result = slerp(q1, q2, 0.5f);
+  Vec3 vector = result.to_mat3() * Vec3(0, 0, -1);
+  mLogInfo("vector: ", vector);
+  mRequire(feq(vector, Vec3(-0.707, 0, -0.707), 0.01));
+}

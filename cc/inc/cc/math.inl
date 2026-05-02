@@ -687,6 +687,28 @@ mMathInlineFunc f32 dot(const Quat& a, const Quat& b) {
 mMathInlineFunc Quat cross(const Quat& a, const Quat& b) {
   return a.cross(b);
 }
+mMathInlineFunc Quat slerp(const Quat& a, const Quat& b, float t) {
+  t          = mMax(0.0f, mMin(1.0f, t));
+  Quat start = a.normalized();
+  Quat end   = b.normalized();
+  f32  dot   = start.dot(end);
+  if (dot < 0.0f) {
+    end = -end;
+    dot = -dot;
+  }
+  if (dot > 0.9995f) {
+    Quat result = start * (1.0f - t) + end * t;
+    return result.normalized();
+  }
+  f32  theta_0     = acos(dot);
+  f32  theta       = theta_0 * t;
+  f32  sin_theta   = sin(theta);
+  f32  sin_theta_0 = sin(theta_0);
+  f32  scale_start = cos(theta) - dot * sin_theta / sin_theta_0;
+  f32  scale_end   = sin_theta / sin_theta_0;
+  Quat result      = start * scale_start + end * scale_end;
+  return result.normalized();
+}
 
 mMathInlineFunc bool feq(f32 a, f32 b, f32 eps) {
   return std::abs(a - b) < eps;

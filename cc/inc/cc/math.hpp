@@ -303,6 +303,7 @@ Quat operator*(f32 a, const Quat& b);
 Quat operator/(const Quat& a, f32 b);
 f32  dot(const Quat& a, const Quat& b);
 Quat cross(const Quat& a, const Quat& b);
+Quat slerp(const Quat& a, const Quat& b, float t);
 
 
 bool feq(f32 a, f32 b, f32 eps = g_eps);
