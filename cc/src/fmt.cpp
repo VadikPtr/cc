@@ -201,6 +201,14 @@ mFmtImpl(ZeroPrefixU16) {
   }
   out.append(StrView(ptr, size));
 }
+mFmtImpl(F32Fmt) {
+  char buf[32];
+  out.append(to_string(v.value, buf, v.trailing_count));
+}
+mFmtImpl(F64Fmt) {
+  char buf[32];
+  out.append(to_string(v.value, buf, v.trailing_count));
+}
 mFmtImpl(u8) {
   char buf[32];
   out.append(to_string(v, buf));

@@ -22,7 +22,7 @@ mTestCase(log_handler_test) {
   mLogInfo("Hello!");
   log_remove_handler(func);
 
-  mRequire(lines.size() == 1) Str log_line = *lines.begin();
-  log_line = Str(log_line.sub(log_line.find_last('|') + 2));
-  mRequireEqStr(log_line, "Hello!\n");
+  mRequire(lines.size() == 1);
+  Str log_line = *lines.begin();
+  mRequire(log_line.ends_with("Hello!\n"));
 }

@@ -36,14 +36,12 @@ namespace {
       QueryPerformanceCounter(&start);
     }
 
-    u64 now() const {
+    u64 nanosecs_since_program_start() const {
       LARGE_INTEGER qpc = {};
       QueryPerformanceCounter(&qpc);
       if (freq.QuadPart == 0) {
         return 0;
       }
-      // return (u64)int64_muldiv(qpc.QuadPart - start.QuadPart, 1'000'000'000,
-      //                          freq.QuadPart);
       decltype(LARGE_INTEGER::QuadPart) elapsed{};
       elapsed = qpc.QuadPart - start.QuadPart;
       elapsed *= 1'000'000'000;
@@ -51,26 +49,45 @@ namespace {
       return u64(elapsed);
     }
 
+    f64 secs_since_program_start() const {
+      LARGE_INTEGER qpc = {};
+      QueryPerformanceCounter(&qpc);
+      if (freq.QuadPart == 0) {
+        return 0;
+      }
+      return f64(qpc.QuadPart - start.QuadPart) / freq.QuadPart;
+    }
+
 #elif defined(__APPLE__)
-    u64 start = 0;
+    u64 start = 0;  // nanosecs
 
     State() { start = clock_gettime_nsec_np(CLOCK_UPTIME_RAW); }
 
-    u64 now() const { return clock_gettime_nsec_np(CLOCK_UPTIME_RAW) - start; }
+    u64 nanosecs_since_program_start() const {
+      return clock_gettime_nsec_np(CLOCK_UPTIME_RAW) - start;
+    }
+
+    f64 secs_since_program_start() const {
+      return f64(nanosecs_since_program_start()) / 1'000'000'000.0;
+    }
 
 #else  // linux
-    u64 start = 0;
+    u64 start = 0;  // nanosecs
 
     State() {
       struct timespec ts;
       clock_gettime(CLOCK_MONOTONIC, &ts);
-      start = (u64)ts.tv_sec * 1000000000 + (u64)ts.tv_nsec;
+      start = (u64)ts.tv_sec * 1'000'000'000 + (u64)ts.tv_nsec;
     }
 
-    u64 now() const {
+    u64 nanosecs_since_program_start() const {
       struct timespec ts;
       clock_gettime(CLOCK_MONOTONIC, &ts);
-      return ((u64)ts.tv_sec * 1000000000 + (u64)ts.tv_nsec) - start;
+      return ((u64)ts.tv_sec * 1'000'000'000 + (u64)ts.tv_nsec) - start;
+    }
+
+    f64 secs_since_program_start() const {
+      return f64(nanosecs_since_program_start()) / 1'000'000'000.0;
     }
 #endif
 
@@ -79,15 +96,16 @@ namespace {
 }  // namespace
 
 
+#if 0  // FULL TIMESTAMP 2026-05-02T12:30:50.086
 void fmt_timestamp(StrBuilder& result) {
-#ifdef _WIN32
+  #ifdef _WIN32
   SYSTEMTIME st = {};
   GetLocalTime(&st);
   fmt(result,  //
       st.wYear, '-', ZeroPrefixU16(2, st.wMonth), '-', ZeroPrefixU16(2, st.wDay), 'T',
       ZeroPrefixU16(2, st.wHour), ':', ZeroPrefixU16(2, st.wMinute), ':',
       ZeroPrefixU16(2, st.wSecond), '.', ZeroPrefixU16(3, st.wMilliseconds));
-#else
+  #else
   struct timeval tv = {};
   gettimeofday(&tv, NULL);
   time_t    now = tv.tv_sec;
@@ -98,14 +116,19 @@ void fmt_timestamp(StrBuilder& result) {
       ZeroPrefixU16(2, u16(st.tm_mday)), 'T', ZeroPrefixU16(2, u16(st.tm_hour)), ':',
       ZeroPrefixU16(2, u16(st.tm_min)), ':', ZeroPrefixU16(2, u16(st.tm_sec)), '.',
       ZeroPrefixU16(3, u16(tv.tv_usec / 1000)));
-#endif
+  #endif
 }
+#else  // SHORT TIMESTAMP secs.ms from program start
+void fmt_timestamp(StrBuilder& result) {
+  fmt(result, F64Fmt{.value = g_state.secs_since_program_start(), .trailing_count = 3});
+}
+#endif
 
 
 Time::Time(u64 value) : value_{value} {}
 
 Time Time::now() {
-  return Time{g_state.now()};
+  return Time{g_state.nanosecs_since_program_start()};
 }
 
 Time Time::make_secs(f64 val) {

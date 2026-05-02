@@ -21,7 +21,7 @@ void log_remove_handler(void (*func)(LogLevel, StrView));
 #define mLogWrite(level, text_level, ...)                    \
   StrBuilder builder;                                        \
   fmt_timestamp(builder);                                    \
-  fmt(builder, " | ", text_level, " | ", __VA_ARGS__, '\n'); \
+  fmt(builder, "[", text_level, "] ", __VA_ARGS__, '\n'); \
   log_write(level, builder);
 
 #define mLogDebug(...)                               \

@@ -29,11 +29,21 @@ struct ZeroPrefixU16 {
   u16 zero_count;
   u16 value;
 };
+struct F32Fmt {
+  f32 value;
+  u32 trailing_count;
+};
+struct F64Fmt {
+  f64 value;
+  u32 trailing_count;
+};
 
 mFmtDeclare(unsigned long long);
 mFmtDeclare(unsigned long);
 mFmtDeclare(bool);
 mFmtDeclare(ZeroPrefixU16);
+mFmtDeclare(F32Fmt);
+mFmtDeclare(F64Fmt);
 mFmtDeclare(u8);
 mFmtDeclare(u16);
 mFmtDeclare(s16);
