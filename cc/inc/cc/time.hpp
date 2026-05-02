@@ -54,6 +54,7 @@ class TimeDelta {
   TimeDelta();
   void on_loop_end();
   void set_multiplier(f32 mutiplier);
+  void add(Time time);
 
   u32  ms_u() const { return delta_ms_u_; }
   f32  ms() const { return delta_ms_; }

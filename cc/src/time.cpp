@@ -254,6 +254,14 @@ void TimeDelta::set_multiplier(f32 mutiplier) {
   multiplier_ = mutiplier;
 }
 
+void TimeDelta::add(Time time) {
+  delta_time_ += time;
+  delta_ms_   = f32(delta_time_.ms());
+  delta_us_   = f32(delta_time_.us());
+  delta_secs_ = f32(delta_time_.secs());
+  delta_ms_u_ = u32(delta_ms_);
+}
+
 ScopedProfiler::ScopedProfiler(StrView name) : name_(name), begin_(Time::now()) {}
 
 ScopedProfiler::~ScopedProfiler() {
