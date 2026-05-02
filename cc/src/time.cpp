@@ -219,11 +219,16 @@ TimeDelta::TimeDelta() : TimeDelta{Time::now()} {}
 void TimeDelta::on_loop_end() {
   Time now    = Time::now();
   delta_time_ = now - begin_;
-  delta_ms_   = f32(delta_time_.ms());
-  delta_us_   = f32(delta_time_.us());
-  delta_secs_ = f32(delta_time_.secs());
+  delta_ms_   = f32(delta_time_.ms()) * multiplier_;
+  delta_us_   = f32(delta_time_.us()) * multiplier_;
+  delta_secs_ = f32(delta_time_.secs()) * multiplier_;
   delta_ms_u_ = u32(delta_ms_);
   begin_      = now;
+}
+
+void TimeDelta::set_multiplier(f32 mutiplier) {
+  assert(mutiplier >= 0);
+  multiplier_ = mutiplier;
 }
 
 ScopedProfiler::ScopedProfiler(StrView name) : name_(name), begin_(Time::now()) {}

@@ -47,11 +47,13 @@ class TimeDelta {
   f32  delta_ms_   = 0;
   f32  delta_us_   = 0;
   f32  delta_secs_ = 0;
+  f32  multiplier_ = 1;
 
  public:
   explicit TimeDelta(Time begin);
   TimeDelta();
   void on_loop_end();
+  void set_multiplier(f32 mutiplier);
 
   u32  ms_u() const { return delta_ms_u_; }
   f32  ms() const { return delta_ms_; }
