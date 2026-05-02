@@ -655,6 +655,68 @@ mMathInlineFunc Quat Quat::from_axis_angle(const Vec3& axis, f32 angle) {
   return Quat(axis.x * s, axis.y * s, axis.z * s, c);
 }
 
+mMathInlineFunc Quat Quat::from_rotation_mat(const Mat3& mat) {
+  Quat res;
+  f32  trace = mat.v[0][0] + mat.v[1][1] + mat.v[2][2];
+  if (trace > 0.0f) {
+    f32 s = 0.5f / sqrt(trace + 1.0f);
+    res.w = 0.25f / s;
+    res.x = (mat.v[1][2] - mat.v[2][1]) * s;
+    res.y = (mat.v[2][0] - mat.v[0][2]) * s;
+    res.z = (mat.v[0][1] - mat.v[1][0]) * s;
+  } else if (mat.v[0][0] > mat.v[1][1] and mat.v[0][0] > mat.v[2][2]) {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[0][0] - mat.v[1][1] - mat.v[2][2]);
+    res.x = 0.25f * s;
+    res.y = (mat.v[1][0] + mat.v[0][1]) / s;
+    res.z = (mat.v[2][0] + mat.v[0][2]) / s;
+    res.w = (mat.v[2][1] - mat.v[1][2]) / s;
+  } else if (mat.v[1][1] > mat.v[2][2]) {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[1][1] - mat.v[0][0] - mat.v[2][2]);
+    res.x = (mat.v[1][0] + mat.v[0][1]) / s;
+    res.y = 0.25f * s;
+    res.z = (mat.v[2][1] + mat.v[1][2]) / s;
+    res.w = (mat.v[2][0] - mat.v[0][2]) / s;
+  } else {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[2][2] - mat.v[0][0] - mat.v[1][1]);
+    res.x = (mat.v[2][0] + mat.v[0][2]) / s;
+    res.y = (mat.v[2][1] + mat.v[1][2]) / s;
+    res.z = 0.25f * s;
+    res.w = (mat.v[1][0] - mat.v[0][1]) / s;
+  }
+  return res.normalized();
+}
+
+mMathInlineFunc Quat Quat::from_rotation_mat(const Mat4& mat) {
+  Quat res;
+  f32  trace = mat.v[0][0] + mat.v[1][1] + mat.v[2][2];
+  if (trace > 0.0f) {
+    f32 s = 0.5f / sqrt(trace + 1.0f);
+    res.w = 0.25f / s;
+    res.x = (mat.v[1][2] - mat.v[2][1]) * s;
+    res.y = (mat.v[2][0] - mat.v[0][2]) * s;
+    res.z = (mat.v[0][1] - mat.v[1][0]) * s;
+  } else if (mat.v[0][0] > mat.v[1][1] and mat.v[0][0] > mat.v[2][2]) {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[0][0] - mat.v[1][1] - mat.v[2][2]);
+    res.x = 0.25f * s;
+    res.y = (mat.v[1][0] + mat.v[0][1]) / s;
+    res.z = (mat.v[2][0] + mat.v[0][2]) / s;
+    res.w = (mat.v[2][1] - mat.v[1][2]) / s;
+  } else if (mat.v[1][1] > mat.v[2][2]) {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[1][1] - mat.v[0][0] - mat.v[2][2]);
+    res.x = (mat.v[1][0] + mat.v[0][1]) / s;
+    res.y = 0.25f * s;
+    res.z = (mat.v[2][1] + mat.v[1][2]) / s;
+    res.w = (mat.v[2][0] - mat.v[0][2]) / s;
+  } else {
+    f32 s = 2.0f * sqrt(1.0f + mat.v[2][2] - mat.v[0][0] - mat.v[1][1]);
+    res.x = (mat.v[2][0] + mat.v[0][2]) / s;
+    res.y = (mat.v[2][1] + mat.v[1][2]) / s;
+    res.z = 0.25f * s;
+    res.w = (mat.v[1][0] - mat.v[0][1]) / s;
+  }
+  return res.normalized();
+}
+
 mMathInlineFunc Quat operator-(const Quat& a) {
   return {-a.x, -a.y, -a.z, -a.w};
 }
@@ -709,6 +771,13 @@ mMathInlineFunc Quat slerp(const Quat& a, const Quat& b, float t) {
   Quat result      = start * scale_start + end * scale_end;
   return result.normalized();
 }
+mMathInlineFunc DualQuat DualQuat::from_mat(const Mat4& mat) {
+  Quat real  = Quat::from_rotation_mat(mat);
+  Quat trans = Quat(mat.v[3].x, mat.v[3].y, mat.v[3].z, 0);
+  Quat dual  = trans * real / 2;
+  return DualQuat(real, dual);
+}
+
 
 mMathInlineFunc bool feq(f32 a, f32 b, f32 eps) {
   return std::abs(a - b) < eps;
