@@ -2,6 +2,9 @@
 #include "cc/error.hpp"
 #include "cc/log.hpp"
 
+static_assert(__clang__,
+              "This only works for clang, need adaptation for different compiler");
+
 #if defined(_WIN32)
   #include <windows.h>
 #else
@@ -13,7 +16,6 @@
   #endif
 #endif
 
-#ifdef __clang__
 namespace {
   int to_builtin_memory_order(MemoryOrder order) {
     switch (order) {
@@ -33,101 +35,161 @@ namespace {
         return __ATOMIC_SEQ_CST;  // fallback
     }
   }
-}  // namespace
-#endif
 
 
 #if defined(_WIN32)
+  ////////////////////////////////////////////////////////////////////////////////////
+  //  WINDOWS IMPLS
+  ////////////////////////////////////////////////////////////////////////////////////
 
-DWORD WINAPI win_thread_func(LPVOID arg) {
-  auto* func = (ThreadFunc*)arg;
-  func->run();
-  return 0;
-}
-
-void thread_create(void*& handle, ThreadFunc* func) {
-  handle = CreateThread(nullptr, 0, win_thread_func, func, 0, nullptr);
-  if (handle == nullptr) {
-    throw Err("Error creating thread"_s);
+  DWORD WINAPI win_thread_func(LPVOID arg) {
+    auto* func = (ThreadFunc*)arg;
+    func->run();
+    return 0;
   }
 
-  if (func->name()) {
-    wchar_t wname[64];
-    if (MultiByteToWideChar(CP_UTF8, 0, func->name(), -1, wname, mArrSize(wname)) == 0) {
-      mLogWarn("Error set thread name: cannot convert name to wide encoding");
-    } else if (FAILED(SetThreadDescription(handle, wname))) {  // Windows 10 1607+ only
-      mLogWarn("Error set thread name");
+  void thread_create(void*& handle, ThreadFunc* func) {
+    handle = CreateThread(nullptr, 0, win_thread_func, func, 0, nullptr);
+    if (handle == nullptr) {
+      throw Err("Error creating thread"_s);
+    }
+    if (func->name()) {
+      wchar_t wname[64];
+      if (MultiByteToWideChar(CP_UTF8, 0, func->name(), -1, wname, mArrSize(wname)) ==
+          0) {
+        mLogWarn("Error set thread name: cannot convert name to wide encoding");
+        return;
+      }
+      // Windows 10 1607+ only
+      if (FAILED(SetThreadDescription(handle, wname))) {
+        mLogWarn("Error set thread name");
+      }
     }
   }
-}
 
-void thread_join(void*& handle) {
-  if (WaitForSingleObject(handle, INFINITE) == WAIT_OBJECT_0) {
-    CloseHandle(handle);
-  } else {
-    mLogWarn("Error joining thread");
-  }
-}
-
-void thread_sleep(u32 ms) {
-  Sleep(ms);
-}
-
-size_t platform_hardware_thread_count() {
-  SYSTEM_INFO sys_info;
-  GetSystemInfo(&sys_info);
-  return sys_info.dwNumberOfProcessors <= 2 ? 2 : size_t(sys_info.dwNumberOfProcessors);
-}
-
-#else
-
-void* unix_thread_func(void* arg) {
-  auto* func = (ThreadFunc*)arg;
-
-  if (func->name()) {
-  #if defined(__APPLE__)
-    pthread_setname_np(func->name());
-  #else
-    char name[16] = {};
-    strncpy(name, func->name(), sizeof(name) - 1);
-    if (pthread_setname_np(pthread_self(), name) != 0) {
-      mLogWarn("Error set thread name");
+  void thread_join(void*& handle) {
+    if (WaitForSingleObject(handle, INFINITE) == WAIT_OBJECT_0) {
+      CloseHandle(handle);
+    } else {
+      mLogWarn("Error joining thread");
     }
-  #endif
   }
 
-  func->run();
-  return nullptr;
-}
-
-void thread_create(void*& handle, ThreadFunc* func) {
-  if (pthread_create((pthread_t*)&handle, nullptr, unix_thread_func, func) != 0) {
-    throw Err("Error creating thread"_s);
+  void thread_sleep(u32 ms) {
+    Sleep(ms);
   }
-}
 
-void thread_join(void*& handle) {
-  pthread_join((pthread_t)handle, nullptr);
-}
+  size_t platform_hardware_thread_count() {
+    SYSTEM_INFO sys_info;
+    GetSystemInfo(&sys_info);
+    return sys_info.dwNumberOfProcessors <= 2 ? 2 : size_t(sys_info.dwNumberOfProcessors);
+  }
 
-void thread_sleep(u32 ms) {
-  usleep(ms * 1000);
-}
+  bool platform_pin_to_core() {
+    u64       mask   = 1 << 0;  // bind to CPU 0 only
+    HANDLE    thread = GetCurrentThread();
+    DWORD_PTR result = SetThreadAffinityMask(thread, mask);
+    return result != 0;
+  }
 
-size_t platform_hardware_thread_count() {
-  #ifdef __APPLE__
-  int    num_threads = 2;
-  size_t size        = sizeof(num_threads);
-  ::sysctlbyname("hw.logicalcpu", &num_threads, &size, nullptr, 0);
-  return num_threads <= 2 ? 2 : size_t(num_threads);
-  #else
-  cpu_set_t cpuset;
-  sched_getaffinity(0, sizeof(cpuset), &cpuset);
-  return size_t(CPU_COUNT(&cpuset));
-  #endif
-}
+  bool platform_prioritize() {
+    return SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+  }
 
+#elif defined(__APPLE__)
+  ////////////////////////////////////////////////////////////////////////////////////
+  //  APPLE IMPL
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  void* unix_thread_func(void* arg) {
+    auto* func = (ThreadFunc*)arg;
+    if (func->name()) {
+      pthread_setname_np(func->name());
+    }
+    func->run();
+    return nullptr;
+  }
+
+  size_t platform_hardware_thread_count() {
+    int    num_threads = 2;
+    size_t size        = sizeof(num_threads);
+    ::sysctlbyname("hw.logicalcpu", &num_threads, &size, nullptr, 0);
+    return num_threads <= 2 ? 2 : size_t(num_threads);
+  }
+
+  bool platform_pin_to_core() {
+    // apple cannot
+    return false;
+  }
+
+  bool platform_prioritize() {
+    // see https://gist.github.com/BrettRToomey/a1e32c2f99fbb9d34dd4bec8566e6d00
+    // Set the QoS for the current thread to User Initiated (High Priority)
+    // This is equivalent to setting a high "nice" value, but smarter
+    int result = pthread_set_qos_class_self_np(QOS_CLASS_USER_INITIATED, 0);
+    return result == 0;
+  }
+
+#elif defined(__linux__)
+  ////////////////////////////////////////////////////////////////////////////////////
+  //  LINUX IMPL
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  void* unix_thread_func(void* arg) {
+    auto* func = (ThreadFunc*)arg;
+    if (func->name()) {
+      char name[16] = {0};
+      strncpy(name, func->name(), sizeof(name) - 1);
+      if (pthread_setname_np(pthread_self(), name) != 0) {
+        mLogWarn("Error set thread name");
+      }
+    }
+    func->run();
+    return nullptr;
+  }
+
+  size_t platform_hardware_thread_count() {
+    cpu_set_t cpuset;
+    sched_getaffinity(0, sizeof(cpuset), &cpuset);
+    return size_t(CPU_COUNT(&cpuset));
+  }
+
+  bool platform_pin_to_core() {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(0, &cpuset);  // bind to cpu 0 only
+    int result = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+    return result == 0;
+  }
+
+  void platform_prioritize() {
+    // Lower nice value = higher priority. -20 is highest, 19 is lowest.
+    // Requires root or CAP_SYS_NICE to go below 0.
+    return nice(-10) != -1;
+  }
 #endif
+
+#if defined(__APPLE__) or defined(__linux__)
+  ////////////////////////////////////////////////////////////////////////////////////
+  //  POSIX IMPLS
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  void thread_create(void*& handle, ThreadFunc* func) {
+    if (pthread_create((pthread_t*)&handle, nullptr, unix_thread_func, func) != 0) {
+      throw Err("Error creating thread"_s);
+    }
+  }
+
+  void thread_join(void*& handle) {
+    pthread_join((pthread_t)handle, nullptr);
+  }
+
+  void thread_sleep(u32 ms) {
+    usleep(ms * 1000);
+  }
+#endif
+
+}  // namespace
 
 
 Thread::Thread(UPtr<ThreadFunc> func) {
@@ -173,6 +235,16 @@ void Thread::sleep(Time time) {
 
 size_t Thread::hardware_thread_count() {
   return platform_hardware_thread_count();
+}
+
+void Thread::pin_to_core_and_prioritize() {
+  if (not platform_pin_to_core()) {
+    mLogWarn("Pin current thread to core failed!");
+  }
+  if (not platform_prioritize()) {
+    mLogWarn("Prioritize app failed!");
+  }
+  mLogDebug("Current thread pinned and prioritized");
 }
 
 
@@ -297,8 +369,6 @@ void LockGuard::unlock() {
   }
 }
 
-#ifdef __clang__
-
 void AtomicInt::store(int v, MemoryOrder mo) {
   __atomic_store_n(&value_, v, to_builtin_memory_order(mo));
 }
@@ -324,5 +394,3 @@ AtomicInt& AtomicInt::operator--() {
   fetch_sub(1);
   return *this;
 }
-
-#endif

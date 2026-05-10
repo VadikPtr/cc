@@ -34,6 +34,7 @@ class Thread {
 
   static void   sleep(Time time);
   static size_t hardware_thread_count();
+  static void   pin_to_core_and_prioritize();
 };
 
 
@@ -121,7 +122,7 @@ class AtomicInt {
   bool compare_exchange_strong(int& expected, int desired,
                                MemoryOrder mo = MemoryOrder::SequentialConsistency);
 
-  operator int() const { return load(); }
+             operator int() const { return load(); }
   AtomicInt& operator++();
   AtomicInt& operator--();
 };

@@ -53,7 +53,7 @@ namespace {
     const char* name() const override { return "TestWaiter"; }
 
     void run() override {
-      auto begin = Time::now();
+      auto      begin = Time::now();
       LockGuard lock{mutex_};
       mLogInfo("Waiter: wait signal");
       while (!ready_) {
@@ -136,4 +136,8 @@ mTestCase(threads_cv) {
 
   Thread waiter{new ThreadFuncWaiter{mutex, cv, ready}};
   Thread notify{new ThreadFuncNotify{mutex, cv, ready}};
+}
+
+mTestCase(threads_prio) {
+  Thread::pin_to_core_and_prioritize();
 }
