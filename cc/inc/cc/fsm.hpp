@@ -71,7 +71,7 @@ class Fsm : public IFsm {
   TState state() const { return current; }
   bool   is_done() const override { return self_state_ == StateMachineState::Final; }
 
-  void to(TState state) {
+  virtual void to(TState state) {
     to_state = state;
     sleep_.reset();
     if (not timed_transition_.has_value()) {
