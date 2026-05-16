@@ -232,6 +232,9 @@ void Str::resize(size_t required_size) {
 }
 
 Str& Str::null_terminate() {
+  if (size_ > 0 && data_[size_ - 1] == 0) {
+    return *this;
+  }
   resize(size_ + 1);
   data_[size_ - 1] = 0;
   return *this;
