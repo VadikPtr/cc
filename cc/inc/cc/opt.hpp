@@ -66,12 +66,12 @@ class Opt {
 
   T* operator->() {
     assert(is_set_);
-    return value_;
+    return &value_;
   }
 
   const T* operator->() const {
     assert(is_set_);
-    return value_;
+    return &value_;
   }
 
   operator bool() const { return is_set_; }
