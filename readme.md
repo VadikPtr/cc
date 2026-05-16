@@ -12,12 +12,6 @@ C++ partial standard library replacement.
 
 This project is using https://github.com/VadikPtr/depo build system.
 
-## TODO
-
-- minor improvements
-   - copy(ArrView, ArrView) will not check if ranges intersects, this could cause problems
-   - str replace method
-
 ## CC Licenses
 
 Library is licensed under WTFPL. See LICENSE file for more information.
